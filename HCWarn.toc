@@ -1,0 +1,7 @@
+## Interface: 11200
+## Title: HCWarn
+## Author: Grylls
+## Notes: Warns you when you or your target is flagged for pvp
+## Version: 1
+
+HCWarn.lua
