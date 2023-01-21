@@ -23,7 +23,7 @@ local function pvp(unit)
             HCWarn.player:SetText("")
         end
     elseif unit == "target" then
-        if ispvp and UnitReaction("target", "player") <= 4 then -- hated to neutral
+        if (ispvp and UnitReaction("target", "player") <= 4) or (ispvp and UnitIsPlayer(unit)) then 
             HCWarn.target:SetText("TARGET IS PVP FLAGGED")
         else
             HCWarn.target:SetText("")
