@@ -3,7 +3,7 @@ PVP warning addon for World of Warcraft: Vanilla
 
 ### Description
 This addon warns you when you or your target is flagged for pvp.    
-The addon also has the function to clear your target if they are pvp flagged
+The addon also includes a function to clear your target if they are pvp flagged.
 
 ### Usage
 /hcwarn or /hcw    
