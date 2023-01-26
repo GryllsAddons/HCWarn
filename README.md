@@ -3,7 +3,11 @@ PVP warning addon for World of Warcraft: Vanilla
 
 ### Description
 This addon warns you when you or your target is flagged for pvp.    
-This is useful for example on Turtle-WoW hardcore mode to let you know if you are flagged and helps prevent yourself from flagging yourself accidentally by assisting or harming the target.
+The addon also has the function to clear your target if they are pvp flagged
+
+### Usage
+/hcwarn    
+/hcwarn interact - toggles being able to interact with the target by clearing the target if the target is pvp flagged.
 
 ### Preview
 ![preview](https://raw.githubusercontent.com/GryllsAddons/AddonPreviews/main/HCWarn/HCWarn.png)
