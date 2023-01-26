@@ -1,3 +1,7 @@
+HCWarn_Settings = {
+    interact = true,
+}
+
 local HCWarn = CreateFrame("Frame")
 HCWarn:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 HCWarn:SetHeight(10)
@@ -23,22 +27,58 @@ local function pvp(unit)
             HCWarn.player:SetText("")
         end
     elseif unit == "target" then
-        if (ispvp and UnitReaction("target", "player") <= 4) or (ispvp and UnitIsPlayer(unit)) then 
-            HCWarn.target:SetText("TARGET IS PVP FLAGGED")
+        if (ispvp and UnitReaction("target", "player") <= 4) or (ispvp and UnitIsPlayer(unit)) then
+            if HCWarn_Settings.interact then
+                HCWarn.target:SetText("TARGET IS PVP FLAGGED")
+            else
+                ClearTarget()
+            end
         else
             HCWarn.target:SetText("")
         end
     end
 end
 
+local function interactSetting()
+    if HCWarn_Settings.interact then
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You can interact with pvp flagged targets")
+    else
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You cannot interact with pvp flagged targets")
+    end
+end
+
+local function HCWarn_commands(msg, editbox)
+    if msg == "interact" then
+        if HCWarn_Settings.interact then
+            HCWarn_Settings.interact = false
+        else
+            HCWarn_Settings.interact = true
+        end
+        interactSetting()
+    else
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn usage:")
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn interact - toggle allowing interacting with targets that are pvp flagged")
+    end
+end
+
 local events = CreateFrame("Frame")
+events:RegisterEvent("ADDON_LOADED")
 events:RegisterEvent("PLAYER_TARGET_CHANGED")
 events:RegisterEvent("UNIT_FACTION", "player")
 events:RegisterEvent("UNIT_FACTION", "target")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 events:SetScript("OnEvent", function()
-    if event == "PLAYER_TARGET_CHANGED" then
+    if event == "ADDON_LOADED" then
+		if not HCWarn.loaded then
+            SLASH_HCWARN1 = "/hcwarn"
+            SLASH_HCWARN2 = "/hcw"
+            SlashCmdList["HCWARN"] = HCWarn_commands
+			DEFAULT_CHAT_FRAME:AddMessage("HCWarn loaded! /hcwarn")
+            interactSetting()
+            HCWarn.loaded = true
+		end
+    elseif event == "PLAYER_TARGET_CHANGED" then
         pvp("target")
     elseif event == "PLAYER_ENTERING_WORLD" then
         pvp("player")
