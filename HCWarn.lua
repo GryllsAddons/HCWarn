@@ -2,7 +2,7 @@ HCWarn_Settings = {
     nointeract = false,
 }
 
-HCWarn = CreateFrame("Frame")
+local HCWarn = CreateFrame("Frame")
 HCWarn:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 HCWarn:SetHeight(10)
 HCWarn:SetWidth(300)
