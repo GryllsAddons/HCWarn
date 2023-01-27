@@ -1,8 +1,8 @@
 HCWarn_Settings = {
-    interact = true,
+    nointeract = false,
 }
 
-local HCWarn = CreateFrame("Frame")
+HCWarn = CreateFrame("Frame")
 HCWarn:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 HCWarn:SetHeight(10)
 HCWarn:SetWidth(300)
@@ -28,10 +28,10 @@ local function pvp(unit)
         end
     elseif unit == "target" then
         if (ispvp and UnitReaction("target", "player") <= 4) or (ispvp and UnitIsPlayer(unit)) then
-            if HCWarn_Settings.interact then
-                HCWarn.target:SetText("TARGET IS PVP FLAGGED")
-            else
+            if HCWarn_Settings.nointeract then
                 ClearTarget()
+            else
+                HCWarn.target:SetText("TARGET IS PVP FLAGGED")                
             end
         else
             HCWarn.target:SetText("")
@@ -40,19 +40,21 @@ local function pvp(unit)
 end
 
 local function interactSetting()
-    if HCWarn_Settings.interact then
-        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You can interact with pvp flagged targets")
-    else
+    if HCWarn_Settings.nointeract then
+        HCWarn_nointeract = true
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You cannot interact with pvp flagged targets")
+    else
+        HCWarn_nointeract = nil
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You can interact with pvp flagged targets")
     end
 end
 
 local function HCWarn_commands(msg, editbox)
     if msg == "interact" then
-        if HCWarn_Settings.interact then
-            HCWarn_Settings.interact = false
+        if HCWarn_Settings.nointeract then
+            HCWarn_Settings.nointeract = false
         else
-            HCWarn_Settings.interact = true
+            HCWarn_Settings.nointeract = true
         end
         interactSetting()
     else
