@@ -4,9 +4,9 @@ PVP warning addon for World of Warcraft: Vanilla
 ### Description
 This addon warns you if your character or your current target is flagged for pvp.    
 
-The addon also includes an prevent interact setting to help prevent flagging yourself for pvp by interacting with a unit.    
+The addon also includes a prevent interact setting to help prevent flagging yourself for pvp by interacting with a unit.    
 
-When this setting is activated your target will be cleared if they are pvp flagged.    
+When this setting is activated your selected target will be instantly cleared if they are pvp flagged.    
 
 You can also prevent casts on a flagged target by using this setting with the mouseover mod (/stcast) included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods).
 
