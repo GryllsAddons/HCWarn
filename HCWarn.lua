@@ -29,8 +29,6 @@ local function pvp(unit)
     elseif unit == "target" then
         if (ispvp and UnitReaction("target", "player") <= 4) or (ispvp and UnitIsPlayer(unit)) then
             if HCWarn_Settings.nointeract then
-                SlashCmdList.STOPATTACK
-                -- SlashCmdList.STOPCASTING
                 ClearTarget()
             else
                 HCWarn.target:SetText("TARGET IS PVP FLAGGED")                
