@@ -17,17 +17,24 @@ HCWarn.target:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 HCWarn.target:SetTextColor(255/255, 124/255, 10/255)
 HCWarn.target:SetPoint("TOP", HCWarn.player, "BOTTOM", 0, -5)
 
-local function pvp(unit)
-    local ispvp = UnitIsPVP(unit)
+function HCWarn_Check(unit)
+    if (UnitIsPVP(unit) and UnitReaction(unit, "player") <= 4) or (UnitIsPVP(unit) and UnitIsPlayer(unit)) then        
+        return true
+    else 
+        return false
+    end
+end
+
+local function pvp(unit)    
     if unit == "player" then
-        if ispvp then
+        if UnitIsPVP("player") then
             PlaySound("ReadyCheck","SFX")
             HCWarn.player:SetText("YOU ARE PVP FLAGGED")
         else
             HCWarn.player:SetText("")
         end
     elseif unit == "target" then
-        if (ispvp and UnitReaction("target", "player") <= 4) or (ispvp and UnitIsPlayer(unit)) then
+        if HCWarn_Check("target") then
             if HCWarn_Settings.nointeract then
                 ClearTarget()
             else
