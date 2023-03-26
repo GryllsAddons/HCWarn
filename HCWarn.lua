@@ -49,10 +49,12 @@ end
 local function interactSetting()
     if HCWarn_Settings.nointeract then
         HCWarn_nointeract = true
-        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You cannot interact with pvp flagged targets")
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You cannot interact with pvp flagged targets", 255/255, 0/255, 0/255)
+        UIErrorsFrame:AddMessage("You cannot interact with pvp flagged targets", 255/255, 0/255, 0/255)
     else
         HCWarn_nointeract = nil
-        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You can interact with pvp flagged targets")
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You can interact with pvp flagged targets", 255/255, 124/255, 10/255)
+        UIErrorsFrame:AddMessage("You can interact with pvp flagged targets", 255/255, 124/255, 10/255)
     end
 end
 
@@ -83,14 +85,14 @@ events:SetScript("OnEvent", function()
             SLASH_HCWARN1 = "/hcwarn"
             SLASH_HCWARN2 = "/hcw"
             SlashCmdList["HCWARN"] = HCWarn_commands
-			DEFAULT_CHAT_FRAME:AddMessage("HCWarn loaded! /hcwarn")
-            interactSetting()
+			DEFAULT_CHAT_FRAME:AddMessage("HCWarn loaded! /hcwarn")            
             HCWarn.loaded = true
 		end
     elseif event == "PLAYER_TARGET_CHANGED" then
         pvp("target")
     elseif event == "PLAYER_ENTERING_WORLD" then
         pvp("player")
+        interactSetting()        
     else
         pvp(arg1)
     end
