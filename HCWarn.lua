@@ -72,6 +72,7 @@ local function HCWarn_commands(msg, editbox)
             HCWarn_Settings.nointeract = true
         end
         interactSetting()
+        announceSetting()
     else
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn usage:")
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn interact - toggle allowing interacting with targets that are pvp flagged")
@@ -99,7 +100,7 @@ events:SetScript("OnEvent", function()
         pvp("target")
     elseif event == "PLAYER_ENTERING_WORLD" then
         pvp("player")
-        announceSetting()             
+        announceSetting()
     else
         pvp(arg1)
     end
