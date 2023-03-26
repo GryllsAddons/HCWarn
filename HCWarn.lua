@@ -61,8 +61,7 @@ local function interactSetting()
         HCWarn_nointeract = true        
     else
         HCWarn_nointeract = nil        
-    end
-    announceSetting()
+    end    
 end
 
 local function HCWarn_commands(msg, editbox)
@@ -99,7 +98,8 @@ events:SetScript("OnEvent", function()
     elseif event == "PLAYER_TARGET_CHANGED" then
         pvp("target")
     elseif event == "PLAYER_ENTERING_WORLD" then
-        pvp("player")                
+        pvp("player")
+        announceSetting()             
     else
         pvp(arg1)
     end
