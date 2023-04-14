@@ -50,7 +50,8 @@ local function announceSetting()
 end
 
 local function interactSetting()
-    if HCWarn_Settings.nointeract then
+    -- set global interact variable for /stcast support
+    if HCWarn_Settings.nointeract then        
         HCWarn_nointeract = true        
     else
         HCWarn_nointeract = nil        
