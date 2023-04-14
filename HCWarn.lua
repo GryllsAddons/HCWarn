@@ -17,14 +17,6 @@ HCWarn.target:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 HCWarn.target:SetTextColor(255/255, 124/255, 10/255)
 HCWarn.target:SetPoint("TOP", HCWarn.player, "BOTTOM", 0, -5)
 
-function HCWarn_Check(unit)
-    if (UnitIsPVP(unit) and UnitReaction(unit, "player") <= 4) or (UnitIsPVP(unit) and UnitIsPlayer(unit)) then        
-        return true
-    else 
-        return false
-    end
-end
-
 local function pvp(unit)    
     if unit == "player" then
         if UnitIsPVP("player") then
@@ -34,9 +26,10 @@ local function pvp(unit)
             HCWarn.player:SetText("")
         end
     elseif unit == "target" then
-        if HCWarn_Check("target") then
-            if HCWarn_Settings.nointeract then
+        if UnitIsPVP(target) then
+            if HCWarn_Settings.nointeract then                
                 ClearTarget()
+                UIErrorsFrame:AddMessage("Target is PVP flagged",1,0,0)
             else
                 HCWarn.target:SetText("TARGET IS PVP FLAGGED")                
             end
