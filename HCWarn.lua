@@ -26,7 +26,7 @@ local function pvp(unit)
             HCWarn.player:SetText("")
         end
     elseif unit == "target" then
-        if UnitIsPVP(target) then
+        if UnitIsPVP("target") then
             if HCWarn_Settings.nointeract then                
                 ClearTarget()
                 UIErrorsFrame:AddMessage("Target is PVP flagged",1,0,0)
