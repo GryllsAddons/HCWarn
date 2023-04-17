@@ -1,8 +1,7 @@
 ## Interface: 11200
 ## Title: HCWarn
 ## Author: Grylls
-## Notes: Warns you when you or your target is flagged for pvp
-## Version: 2
-## SavedVariablesPerCharacter: HCWarn_Settings
+## Notes: Warns you when you are flagged for pvp
+## Version: 3
 
 HCWarn.lua
