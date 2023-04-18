@@ -10,7 +10,7 @@ If the interact setting is **OFF** and you have an attackable flagged target, th
 The interact setting will be displayed when logging in or entering/leaving instances.  
 You can prevent casts on a flagged unit by using this setting with the mouseover mod (/stcast) included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods).    
 
-#### By default interact setting is ON. This setting is saved per character.
+#### The interact setting is ON by default. This setting is saved per character.
 
 ### Usage
 /hcwarn or /hcw    
