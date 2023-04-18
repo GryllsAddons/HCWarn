@@ -25,12 +25,14 @@ HCWarn.target:SetTextColor(1, 0.5, 0)
 HCWarn.target:Hide()
 
 function HCWarn:announceSetting()
-    if HCWarn_Settings.interact then
-        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You can interact with pvp flagged targets", 1, 0.5, 0)
-        UIErrorsFrame:AddMessage("You can interact with pvp flagged targets", 1, 0.5, 0)        
-    else
-        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You cannot interact with pvp flagged targets", 1, 0.25, 0)
-        UIErrorsFrame:AddMessage("You cannot interact with pvp flagged targets", 1, 0.25, 0)
+    if not UnitIsDead("player") then
+        if HCWarn_Settings.interact then
+            DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You can interact with pvp flagged targets", 1, 0.5, 0)
+            UIErrorsFrame:AddMessage("You can interact with pvp flagged targets", 1, 0.5, 0)        
+        else
+            DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You cannot interact with pvp flagged targets", 1, 0.25, 0)
+            UIErrorsFrame:AddMessage("You cannot interact with pvp flagged targets", 1, 0.25, 0)
+        end
     end
 end
 
@@ -89,16 +91,13 @@ HCWarn:RegisterEvent("UNIT_FACTION", "target")
 
 HCWarn:SetScript("OnEvent", function()
     if event == "ADDON_LOADED" then
-		if not HCWarn.loaded then
-            HCWarn.loaded = true
-            HCWarn.faction = UnitFactionGroup("player")
-            SLASH_HCWARN1 = "/hcwarn"
-            SLASH_HCWARN2 = "/hcw"
-            SlashCmdList["HCWARN"] = HCWarn_commands
-            DEFAULT_CHAT_FRAME:AddMessage("HCWarn Loaded! /hcwarn", 1, 0.5, 0)
-            HCWarn:interactSetting()                       
-		end
-    elseif event == "PLAYER_ENTERING_WORLD" then        
+        HCWarn.faction = UnitFactionGroup("player")
+        SLASH_HCWARN1 = "/hcwarn"
+        SLASH_HCWARN2 = "/hcw"
+        SlashCmdList["HCWARN"] = HCWarn_commands
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn Loaded! /hcwarn", 1, 0.5, 0)
+        HCWarn:interactSetting()
+    elseif event == "PLAYER_ENTERING_WORLD" then
         HCWarn:announceSetting()
         HCWarn:PvP("player")
     elseif event == "PLAYER_TARGET_CHANGED" then        
