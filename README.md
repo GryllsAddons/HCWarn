@@ -1,6 +1,7 @@
 ### HCWarn
 This addon helps prevent accidental PvP flagging and warns when flagged.    
 The addon was created with [hardcore](https://turtle-wow.org/#/hardcore-mode]) players in mind.    
+The addon is compatible with [unitscan](https://github.com/shirsig/unitscan-vanilla) and [unitscan-turtle](https://github.com/GryllsAddons/unitscan-turtle).
 
 ### Warnings:
 If you are PvP flagged, a warning will be displayed and a screen border will be shown. A pvp sound will also be played.   
