@@ -1,4 +1,4 @@
-#### Description
+### Description
 This addon helps prevent accidental PvP flagging and warns when flagged.    
 Please note that the addon will not function while in instances.    
 You can enable or disable the features of the addon by using the /hcwarn or /hcw command.
