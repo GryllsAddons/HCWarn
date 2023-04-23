@@ -1,8 +1,8 @@
 -- PvP quest info from https://forum.turtle-wow.org/viewtopic.php?f=37&t=4490
 
-function HCWarn:quests()
-    if HCWarn.faction == "Alliance" then
-        HCWarn.quests = {
+function HCWarn_quests(faction)
+    if faction == "Alliance" then
+        return {
             ["Avoiding Detection"] = {
                 {
                     -- https://database.turtle-wow.org/?quest=40079
@@ -46,8 +46,8 @@ function HCWarn:quests()
                 },
             }, 
         }
-    elseif HCWarn.faction == "Horde" then
-        HCWarn.quests = {
+    elseif faction == "Horde" then
+        return {
             ["A Rogue's Deal"] = {
                 {
                     -- https://database.turtle-wow.org/?quest=590
@@ -62,6 +62,13 @@ function HCWarn:quests()
                     giver = "Otho Moji'ko",
                     objective = "travel to Aerie Peak",
                     pvp = "Wildhammer dwarves"
+                },
+            },
+            ["Your Place In The World"] = {
+                {
+                    giver = "Kaltunk",
+                    objective = "Speak with Gornek",
+                    pvp = "Lord Gregor Lescovar"
                 },
             },
         }

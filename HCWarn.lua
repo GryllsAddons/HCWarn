@@ -6,7 +6,7 @@ HCWarn_Settings = {
     target = true
 }
 
-HCWarn = CreateFrame("Frame")
+local HCWarn = CreateFrame("Frame")
 
 HCWarn.border = CreateFrame("Frame")
 HCWarn.border:SetAllPoints(UIParent)
@@ -134,14 +134,6 @@ function HCWarn:pvpTarget()
     end
 end
 
-function HCWarn:interactSetting()
-    if HCWarn_Settings.interact then
-        HCWarn.interact = true
-    else
-        HCWarn.interact = nil
-    end
-end
-
 function HCWarn:checkHardcore()
     for slot = 1, 24 do
         local spellName, spellRank = GetSpellName(slot, BOOKTYPE_SPELL)
@@ -151,6 +143,15 @@ function HCWarn:checkHardcore()
             return true
         end
     end
+end
+
+function HCWarn:mouseover()
+    -- set global variable for /stcast mouseover
+    if HCWarn_Settings.interact then
+        HCWarn_interact = true
+    else
+        HCWarn_interact = nil
+    end    
 end
 
 function HCWarn:reset()
@@ -164,6 +165,8 @@ function HCWarn:reset()
     HCWarn:pvpPlayer()
     HCWarn:pvpTarget()
 end
+
+
 
 function HCWarn:findQuest(title, giver, objective)    
     for quest, table in pairs(HCWarn.quests) do
@@ -263,8 +266,8 @@ local function HCWarn_commands(msg, editbox)
         else
             HCWarn_Settings.interact = true
         end
-        HCWarn:interactSetting()
         message(HCWarn_Settings.interact, "Interaction")
+        HCWarn:mouseover()        
         HCWarn:pvpTarget()
         if HCWarn_Settings.target then
             HCWarn:interactMessage()
@@ -334,10 +337,10 @@ HCWarn:SetScript("OnEvent", function()
     elseif event == "PLAYER_ENTERING_WORLD" then
         if not this.login then
             this.login = true
-            HCWarn:interactSetting() -- HCWarn.interact
+            HCWarn:mouseover()
             HCWarn.hardcore = HCWarn:checkHardcore()
             HCWarn.faction = UnitFactionGroup("player")
-            HCWarn:quests() -- HCWarn.quests
+            HCWarn.quests = HCWarn_quests(HCWarn.faction)
             HCWarn:pvpPlayer()
             HCWarn:mapUpdate(true)
             if IsAddOnLoaded("unitscan") or IsAddOnLoaded("unitscan-turtle") then
