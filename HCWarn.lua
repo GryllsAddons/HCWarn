@@ -357,7 +357,7 @@ HCWarn:SetScript("OnEvent", function()
             HCWarn.faction = UnitFactionGroup("player")           
             HCWarn:pvpPlayer()
             HCWarn:mapUpdate(true)
-            HCWarn:quest(HCWarn.faction)
+            HCWarn:quest()
             if IsAddOnLoaded("unitscan") or IsAddOnLoaded("unitscan-turtle") then
                 HCWarn.unitscan = true
             end
