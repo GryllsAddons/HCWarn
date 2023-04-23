@@ -18,6 +18,7 @@ You can prevent casts on a flagged unit by using this setting with the mouseover
 #### If you are NOT hardcore:     
 - If the target setting is **ON** and you are targeting a PvP flagged unit, a warning will be displayed.      
 - If the target setting is **OFF** and you are targeting a PvP flagged unit, the target will be cleared.
+- You can still interact with friendly targets that are PvP flagged by right clicking.
 ### Instances
 The addon will not display warnings or clear targets while in instances.     
 The target setting will be displayed when logging in or when leaving instances.       
