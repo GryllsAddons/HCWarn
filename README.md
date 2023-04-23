@@ -17,7 +17,7 @@ The addon includes an target setting "/hcwarn target" to help prevent flagging y
 #### If you are NOT hardcore:     
 - If the target setting is **ON** and you are targeting a PvP flagged unit, a warning will be displayed.      
 - If the target setting is **OFF** and you are targeting a PvP flagged unit, the target will be cleared.
-- You can still interact with friendly targets that are PvP flagged by right clicking.
+- If the target setting is **OFF** you can still interact with friendly targets that are PvP flagged by right clicking.
 #### Quest Warning
 The addon includes a warning for quests that involve the potential to flag yourself for pvp ([based on this post](https://forum.turtle-wow.org/viewtopic.php?f=37&t=4490)).     
 A warning will show in the quest detail window - mouseover the warning to show the details.     
