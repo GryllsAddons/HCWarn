@@ -24,7 +24,7 @@ A warning will show in the quest detail window - mouseover the warning to show t
 If you find a quest that involves PvP that is not listed, please create an [issue](https://github.com/GryllsAddons/HCWarn/issues).
 ### Macros to prevent casting on PvP units
 If using the mouseover mod included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods), it will take the target setting into account.    
-For example if you use the /stcast macro below and the target setting is off, you will not be able to cast on the mouseover unit.
+For example if you use the /stcast macro below and the target setting is off you will not be able to cast on the mouseover unit.
 ```
 /stcast Heal
 ```
@@ -32,7 +32,7 @@ Other ways to prevent casts include using the "nopvp" condition included in [Roi
 ```
 /cast [nopvp nodead] Heal
 ```
-You can also use "not UnitIsPVP("target")" in a macro:
+You can also use *****not UnitIsPVP("target")***** in a macro:
 ```
 if not UnitIsPVP("target") then CastSpellByName("Heal") end
 ```
