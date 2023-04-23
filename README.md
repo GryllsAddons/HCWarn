@@ -7,14 +7,13 @@ For other useful hardcore addons, please see [HCRank](https://github.com/GryllsA
 
 ### Warnings and Targeting
 If you are PvP flagged, a warning will be displayed and a screen border will be shown. A pvp sound will also be played.   
-
-Turtle WoW allows hardcore players to assist NPC PvP units without PvP flagging but does not allow you to assist player targets.     
+  
 The addon includes an target setting to help prevent flagging yourself for pvp.   
-
 You can prevent casts on a flagged unit by using this setting with the mouseover mod (/stcast) included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods).
 
 #### The target setting is OFF by default - this setting is saved per character. You can toggle this setting by using /hcwarn target
 #### If you are hardcore:     
+- Turtle WoW allows hardcore players to assist NPC PvP units without PvP flagging but does not allow you to assist player targets.   
 - If the target setting is **ON** and you are targeting a PvP flagged enemy, a warning will be displayed.
 - If the target setting is **OFF** and you are targeting a PvP flagged enemy, the target will be cleared.
 #### If you are NOT hardcore:     
