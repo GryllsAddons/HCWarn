@@ -14,7 +14,7 @@ The addon includes an target setting "/hcwarn target" to help prevent flagging y
 - Turtle WoW allows hardcore players to assist NPC PvP units without PvP flagging but does not allow you to assist player targets.   
 - If the target setting is **ON** and you are targeting a PvP flagged enemy, a warning will be displayed.
 - If the target setting is **OFF** and you are targeting a PvP flagged enemy, the target will be cleared.
-##### If you are NOT hardcore:     
+#### If you are NOT hardcore:     
 - If the target setting is **ON** and you are targeting a PvP flagged unit, a warning will be displayed.      
 - If the target setting is **OFF** and you are targeting a PvP flagged unit, the target will be cleared.
 - You can still interact with friendly targets that are PvP flagged by right clicking.
