@@ -24,6 +24,7 @@ The target setting will be displayed when logging in or when leaving instances.
 ### Quests
 The addon includes a warning for quests that involve the potential to flag yourself for pvp ([based on this post](https://forum.turtle-wow.org/viewtopic.php?f=37&t=4490)).     
 A warning will show in the quest detail window - mouseover the warning to show the details.     
+If you find a quest that involves PvP that is not listed, please create an [issue](https://github.com/GryllsAddons/HCWarn/issues).
 ### Usage
 /hcwarn or /hcw    
 ### Commands
