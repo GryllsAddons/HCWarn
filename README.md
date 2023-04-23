@@ -1,7 +1,7 @@
 ### HCWarn
 This addon helps prevent accidental PvP flagging and warns when flagged.    
 The addon was primarily created with [hardcore](https://turtle-wow.org/#/hardcore-mode]) players in mind.    
-The addon is compatible with [unitscan](https://github.com/shirsig/unitscan-vanilla) and [unitscan-turtle](https://github.com/GryllsAddons/unitscan-turtle).
+The addon is compatible with [unitscan](https://github.com/shirsig/unitscan-vanilla) and [unitscan-turtle](https://github.com/GryllsAddons/unitscan-turtle).    
 For other useful hardcore addons, please see [MobRank](https://github.com/GryllsAddons/MobRank/blob/main/MobRank.lua) and [codex](https://github.com/nakda/codex)
 
 ### Warnings and Targeting
