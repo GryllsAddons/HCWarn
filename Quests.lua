@@ -64,13 +64,6 @@ function HCWarn_quests(faction)
                     pvp = "Wildhammer dwarves"
                 },
             },
-            ["Your Place In The World"] = {
-                {
-                    giver = "Kaltunk",
-                    objective = "Speak with Gornek",
-                    pvp = "Lord Gregor Lescovar"
-                },
-            },
         }
     end
 end
