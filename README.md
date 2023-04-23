@@ -5,15 +5,17 @@ The addon is compatible with [unitscan](https://github.com/shirsig/unitscan-vani
 
 ### Warnings:
 If you are PvP flagged, a warning will be displayed and a screen border will be shown. A pvp sound will also be played.   
-The addon also includes a interact setting to help prevent flagging yourself for pvp.   
+Turtle WoW allows hardcore players to assist NPC PvP units without PvP flagging but does not allow you to assist player targets without flagging.     
+The addon includes an interact setting to help prevent flagging yourself for pvp.   
 You can prevent casts on a flagged unit by using this setting with the mouseover mod (/stcast) included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods).
+
 #### The interact setting is OFF by default - this setting is saved per character. You can toggle this setting by using /hcwarn interact
 #### If you are hardcore:     
 - If the interact setting is **ON** and you have an PvP flagged enemy, a warning will be displayed.    
-- If the interact setting is **OFF** and you have an PvP flagged enemy, the target will be instantly cleared.
+- If the interact setting is **OFF** and you have an PvP flagged enemy, the target will be instantly cleared if the target is a player.
 #### If you are NOT hardcore:     
 - If the interact setting is **ON** and you have an PvP flagged target, a warning will be displayed.    
-- If the interact setting is **OFF** and you have an PvP flagged player target, the target will be instantly cleared otherwise a warning will be displayed.     
+- If the interact setting is **OFF** and you have an PvP flagged target, the target will be instantly cleared if the target is a player.
 ### Instances
 The addon will not display warnings or clear targets while in instances.     
 The interact setting will be displayed when logging in or when leaving instances.       
