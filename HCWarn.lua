@@ -250,7 +250,9 @@ end
 
 function HCWarn:questFinished()
     HCWarn.pvpQuest = nil
-    QuestFrameDetailPanel.pvp:Hide()
+    if QuestFrameDetailPanel.pvp then
+        QuestFrameDetailPanel.pvp:Hide()
+    end
     QuestFrameAcceptButton:SetTextColor(1, 0.82, 0)    
 end
 
