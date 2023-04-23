@@ -185,7 +185,7 @@ function HCWarn:questDetail()
     if not QuestFrameDetailPanel.pvp then        
         QuestFrameDetailPanel.pvp = CreateFrame("Frame", nil, QuestFrameDetailPanel)
         QuestFrameDetailPanel.pvp:Hide()
-        QuestFrameDetailPanel.pvp:SetWidth(104)
+        QuestFrameDetailPanel.pvp:SetWidth(1)
         QuestFrameDetailPanel.pvp:SetHeight(30)
         QuestFrameDetailPanel.pvp:SetPoint("TOP", QuestNpcNameFrame, "BOTTOM", 0, -8)
         QuestFrameDetailPanel.pvp:SetBackdrop({
@@ -197,29 +197,36 @@ function HCWarn:questDetail()
         QuestFrameDetailPanel.pvp:SetBackdropColor(1, .25, 0, .5)
         QuestFrameDetailPanel.pvp:SetBackdropBorderColor(1, .25, 0)
         QuestFrameDetailPanel.pvp:EnableMouse(true)
-
-        QuestFrameDetailPanel.pvp.text = QuestFrameDetailPanel.pvp:CreateFontString("Status", "LOW", "GameFontNormal")
-        QuestFrameDetailPanel.pvp.text:SetFont(DAMAGE_TEXT_FONT, 12, "OUTLINE")
-        QuestFrameDetailPanel.pvp.text:SetPoint("RIGHT", QuestFrameDetailPanel.pvp, "RIGHT", -5, 0)
-        QuestFrameDetailPanel.pvp.text:SetFontObject(GameFontWhite)
-        QuestFrameDetailPanel.pvp.text:SetText("PvP Quest!")
-        QuestFrameDetailPanel.pvp.text:SetTextColor(1, 0.25, 0)
-
+        
         QuestFrameDetailPanel.pvp.icon = QuestFrameDetailPanel.pvp:CreateTexture(nil, "ARTWORK")
         local icon = "Interface\\Icons\\Inv_bannerpvp_01"
         if HCWarn.faction == "Alliance" then
             icon = "Interface\\Icons\\Inv_bannerpvp_02"
         end
+        local inset = 5
         QuestFrameDetailPanel.pvp.icon:SetTexture(icon)        
         QuestFrameDetailPanel.pvp.icon:SetWidth(20)
         QuestFrameDetailPanel.pvp.icon:SetHeight(20)
-        QuestFrameDetailPanel.pvp.icon:SetPoint("LEFT", QuestFrameDetailPanel.pvp, "LEFT", 5, 0)
+        QuestFrameDetailPanel.pvp.icon:SetPoint("LEFT", QuestFrameDetailPanel.pvp, "LEFT", inset, 0)
 
         QuestFrameDetailPanel.pvp.icon.border = CreateFrame("Frame", nil, QuestFrameDetailPanel.pvp)
         QuestFrameDetailPanel.pvp.icon.border:SetPoint("TOPLEFT", QuestFrameDetailPanel.pvp.icon, "TOPLEFT", -2, 2)
         QuestFrameDetailPanel.pvp.icon.border:SetPoint("BOTTOMRIGHT", QuestFrameDetailPanel.pvp.icon, "BOTTOMRIGHT", 2, -2)
         QuestFrameDetailPanel.pvp.icon.border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 12})
         QuestFrameDetailPanel.pvp.icon.border:SetBackdropBorderColor(1, .25, 0)
+
+        QuestFrameDetailPanel.pvp.text = QuestFrameDetailPanel.pvp:CreateFontString("Status", "LOW", "GameFontNormal")
+        QuestFrameDetailPanel.pvp.text:SetFont(DAMAGE_TEXT_FONT, 12, "OUTLINE")
+        QuestFrameDetailPanel.pvp.text:SetPoint("LEFT", QuestFrameDetailPanel.pvp.icon, "RIGHT", 2, 0)
+        QuestFrameDetailPanel.pvp.text:SetFontObject(GameFontWhite)
+        QuestFrameDetailPanel.pvp.text:SetText("PvP Quest")
+        QuestFrameDetailPanel.pvp.text:SetTextColor(1, 0.25, 0)
+
+        QuestFrameDetailPanel.pvp:SetWidth((inset*2)+QuestFrameDetailPanel.pvp.icon.border:GetWidth()+QuestFrameDetailPanel.pvp.text:GetWidth())
+        if IsAddOnLoaded("pfUI") then
+            QuestFrameDetailPanel.pvp:ClearAllPoints()
+            QuestFrameDetailPanel.pvp:SetPoint("TOP", QuestNpcNameFrame, "BOTTOM", -10, -8)
+        end
 
         QuestFrameDetailPanel.pvp:SetScript("OnEnter", function()
             GameTooltip:ClearLines()
