@@ -2,6 +2,8 @@ HCWarn_Settings = {
     interact = false,
     sound = true,
     border = true,
+    reminder = true,
+    message = true,
     player = true,
     target = true,
     quest = true
@@ -46,7 +48,7 @@ function HCWarn:mapUpdate(reset)
 end
 
 function HCWarn:interactMessage()
-    if not HCWarn_Settings.target then return end
+    if (not HCWarn_Settings.target) or (not HCWarn_Settings.reminder) then return end
     if UnitIsDead("player") then return end
     if HCWarn_Settings.interact then
         if HCWarn.hardcore then
@@ -103,7 +105,9 @@ function HCWarn:pvpTargetLogic()
             HCWarn.target:Show()
         else            
             ClearTarget()
-            HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)            
+            if HCWarn_Settings.message then
+                HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
+            end
         end
     end
 
@@ -124,7 +128,7 @@ end
 
 function HCWarn:pvpTarget()
     HCWarn.target:Hide()
-    -- if not HCWarn_Settings.target then return end   
+    if not HCWarn_Settings.target then return end
     if HCWarn.unitscan then
         HCWarn.target.time = GetTime() + 0.001
         HCWarn.target.timer:Show()
@@ -310,14 +314,14 @@ local function HCWarn_commands(msg, editbox)
         end
         message(HCWarn_Settings.player, "Player PvP warning")
         HCWarn:pvpPlayer()
-    -- elseif msg == "warn target" then
-    --     if HCWarn_Settings.target then
-    --         HCWarn_Settings.target = false
-    --     else
-    --         HCWarn_Settings.target = true
-    --     end
-    --     message(HCWarn_Settings.target, "Target PvP warning")
-    --     HCWarn:pvpTarget()
+    elseif msg == "warn target" then
+        if HCWarn_Settings.target then
+            HCWarn_Settings.target = false
+        else
+            HCWarn_Settings.target = true
+        end
+        message(HCWarn_Settings.target, "Target PvP warning")
+        HCWarn:pvpTarget()
     elseif msg == "quest" then
         if HCWarn_Settings.quest then
             HCWarn_Settings.quest = false
@@ -326,17 +330,34 @@ local function HCWarn_commands(msg, editbox)
         end
         message(HCWarn_Settings.quest, "Quest PvP warning")
         HCWarn:quest()
+    elseif msg == "reminder" then
+        if HCWarn_Settings.reminder then
+            HCWarn_Settings.reminder = false
+        else
+            HCWarn_Settings.reminder = true
+        end
+        message(HCWarn_Settings.reminder, "Target reminder")
+    elseif msg == "message" then
+        if HCWarn_Settings.message then
+            HCWarn_Settings.message = false
+        else
+            HCWarn_Settings.message = true
+        end
+        message(HCWarn_Settings.message, "Target message")
     elseif msg == "reset" then
         HCWarn:reset()
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn: Settings reset.", 1, 0.5, 0)
     else
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn usage:", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn target - toggle targeting PvP flagged units", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn sound - toggle PvP warning sound", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn border - toggle PvP warning border", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn warn player - toggle PvP warning for your character", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn warn target - toggle PvP warning for your target", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn quest - toggle PvP warning for quests", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reset - reset settings", 1, 0.5, 0)      
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reminder - toggle 'You can target' reminder", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn message - toggle 'Target is PvP flagged' message", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn sound - toggle player PvP warning sound", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn border - toggle player PvP warning border", 1, 0.5, 0)        
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reset - reset settings", 1, 0.5, 0)  
     end
 end
 
