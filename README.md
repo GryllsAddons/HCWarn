@@ -3,10 +3,7 @@ This addon helps prevent accidental PvP flagging and warns when flagged.
 You can enable and disable features of the addon by using the /hcwarn or /hcw command.
 
 #### Player Warning
-If you are PvP flagged:
-- A warning will be displayed 
-- A screen border will be shown.
-- A pvp sound will be played.   
+If you are PvP flagged a warning will be displayed, a screen border will be shown and a pvp sound will be played.   
 #### Target Warning
 The addon includes an target setting "/hcwarn target" to help prevent flagging yourself for pvp.   
 If the target setting is OFF, the addon will stop interaction by clearing the target.    
