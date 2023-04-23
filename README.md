@@ -1,7 +1,8 @@
 #### Description
 This addon helps prevent accidental PvP flagging and warns when flagged.    
-You can enable and disable features of the addon by using the /hcwarn or /hcw command.
-
+Please note that the addon will not function while in instances.    
+You can enable or disable the features of the addon by using the /hcwarn or /hcw command.
+### Features
 #### Player Warning
 If you are PvP flagged a warning will be displayed, a screen border will be shown and a pvp sound will be played.   
 #### Target Warning
@@ -20,9 +21,7 @@ If the target setting is OFF, the addon will stop interaction by clearing the ta
 The addon includes a warning for quests that involve the potential to flag yourself for pvp ([based on this post](https://forum.turtle-wow.org/viewtopic.php?f=37&t=4490)).     
 A warning will show in the quest detail window - mouseover the warning to show the details.     
 If you find a quest that involves PvP that is not listed, please create an [issue](https://github.com/GryllsAddons/HCWarn/issues).
-#### Instances
-The addon will not display warnings or clear targets while in instances.
-#### Macros to prevent casting on PvP units
+### Macros to prevent casting on PvP units
 If using the mouseover mod included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods), it will take the target setting into account.    
 For example if you use the /stcast macro below and the target setting is off, you will not be able to cast on the mouseover unit.
 ```
@@ -36,6 +35,6 @@ You can also use "not UnitIsPVP("target")" in a macro:
 ```
 if not UnitIsPVP("target") then CastSpellByName("Heal") end
 ```
-#### Addon Compatibility
+### Addon Compatibility
 The addon is compatible with [unitscan](https://github.com/shirsig/unitscan-vanilla) and [unitscan-turtle](https://github.com/GryllsAddons/unitscan-turtle).    
 For other useful hardcore addons, please see [HCRank](https://github.com/GryllsAddons/HCRank) and [codex](https://github.com/nakda/codex).  
