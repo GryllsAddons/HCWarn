@@ -9,7 +9,7 @@ If you are PvP flagged:
 - A pvp sound will be played.   
 #### Target Warning
 The addon includes an target setting "/hcwarn target" to help prevent flagging yourself for pvp.   
-#### The target setting is OFF by default - this setting is saved per character.
+#### The target setting is ON by default - this setting is saved per character.
 #### If you are hardcore:     
 - Turtle WoW allows hardcore players to assist NPC PvP units without PvP flagging but does not allow you to assist player targets.   
 - If the target setting is **ON** and you are targeting a PvP flagged enemy, a warning will be displayed.
