@@ -12,7 +12,7 @@ You can prevent casts on a flagged unit by using this setting with the mouseover
 - If the interact setting is **OFF** and you have an PvP flagged enemy, the target will be instantly cleared.
 #### If you are NOT hardcore:     
 - If the interact setting is **ON** and you have an PvP flagged target, a warning will be displayed.    
-- If the interact setting is **OFF** and you have an PvP flagged player, the target will be instantly cleared otherwise a warning will be displayed.     
+- If the interact setting is **OFF** and you have an PvP flagged player target, the target will be instantly cleared otherwise a warning will be displayed.     
 ### Instances
 The addon will not display warnings or clear targets while in instances.     
 The interact setting will be displayed when logging in or when leaving instances.       
