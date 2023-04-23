@@ -30,7 +30,7 @@ For example if you use the /stcast macro below and the target setting is off, yo
 ```
 Other ways to prevent casts include using the "nopvp" condition included in [Roid-Macros](https://github.com/DennisWG/Roid-Macros):
 ```
-/cast [@mouseover nopvp nodead] Heal; Heal
+/cast [nopvp nodead] Heal
 ```
 You can also use "not UnitIsPVP("target")" in a macro:
 ```
