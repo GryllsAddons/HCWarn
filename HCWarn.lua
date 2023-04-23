@@ -48,9 +48,17 @@ function HCWarn:interactMessage()
     if not HCWarn_Settings.target then return end
     if UnitIsDead("player") then return end
     if HCWarn_Settings.interact then
-        HCWarn:ErrorMessage("You can interact with PvP flagged enemies", 1, 0.5, 0)
+        if HCWarn.hardcore then
+            HCWarn:ErrorMessage("You can interact with PvP flagged enemies", 1, 0.5, 0)
+        else
+            HCWarn:ErrorMessage("You can interact with PvP flagged players", 1, 0.5, 0)
+        end
     else
-        HCWarn:ErrorMessage("You cannot interact with PvP flagged enemies", 1, 0.25, 0)
+        if HCWarn.hardcore then
+            HCWarn:ErrorMessage("You cannot interact with PvP flagged enemies", 1, 0.25, 0)
+        else
+            HCWarn:ErrorMessage("You cannot interact with PvP flagged players", 1, 0.25, 0)
+        end
     end
 end
 
@@ -89,28 +97,29 @@ HCWarn.target.timer:SetScript("OnUpdate", function()
 end)
 
 function HCWarn:pvpTargetLogic()
-    local function target()
-        if HCWarn_Settings.interact then
-            HCWarn.target:Show()
+    if UnitIsPVP("target") and (not IsInInstance()) then
+        if HCWarn.hardcore then
+            if UnitCanAttack("player", "target") then
+                if HCWarn_Settings.interact then
+                    HCWarn.target:Show()
+                else
+                    ClearTarget()
+                    HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
+                end
+            end
         else
-            ClearTarget()
-            HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
+            -- not hardcore
+            if HCWarn_Settings.interact then
+                HCWarn.target:Show()
+            else
+                if UnitIsPlayer("target") then
+                    ClearTarget()
+                    HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
+                else
+                    HCWarn.target:Show()
+                end
+            end
         end
-    end
-
-    -- if HCWarn.hardcore then
-    --     -- include friendy units for hardcore
-    --     if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then
-    --         target()
-    --     end
-    -- else
-    --     if UnitIsPVP("target") and UnitIsPlayer("target") and (not IsInInstance()) then
-    --         target()
-    --     end
-    -- end
-
-    if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then
-        target()
     end
 end
 
