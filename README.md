@@ -23,8 +23,8 @@ The addon includes a warning for quests that involve the potential to flag yours
 A warning will show in the quest detail window - mouseover the warning to show the details.     
 If you find a quest that involves PvP that is not listed, please create an [issue](https://github.com/GryllsAddons/HCWarn/issues).
 ### Macros to prevent casting on PvP units
-If using the mouseover mod included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods), it will take the target setting into account.    
-For example if you use the /stcast macro below and the target setting is off you will not be able to cast on the mouseover unit.
+If using the mouseover mod included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods) it will take the target setting into account.    
+For example, if you use the /stcast macro below and the target setting is off you will not be able to cast on the mouseover unit.
 ```
 /stcast Heal
 ```
