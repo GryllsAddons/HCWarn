@@ -3,7 +3,8 @@ HCWarn_Settings = {
     sound = true,
     border = true,
     player = true,
-    target = true
+    target = true,
+    quest = true
 }
 
 local HCWarn = CreateFrame("Frame")
@@ -49,15 +50,15 @@ function HCWarn:interactMessage()
     if UnitIsDead("player") then return end
     if HCWarn_Settings.interact then
         if HCWarn.hardcore then
-            HCWarn:ErrorMessage("You can interact with PvP flagged enemies", 1, 0.5, 0)
+            HCWarn:ErrorMessage("You can target PvP flagged enemies", 1, 0.5, 0)
         else
-            HCWarn:ErrorMessage("You can interact with PvP flagged players", 1, 0.5, 0)
+            HCWarn:ErrorMessage("You can target PvP flagged units", 1, 0.5, 0)
         end
     else
         if HCWarn.hardcore then
-            HCWarn:ErrorMessage("You cannot interact with PvP flagged enemies", 1, 0.25, 0)
+            HCWarn:ErrorMessage("You cannot target PvP flagged enemies", 1, 0.25, 0)
         else
-            HCWarn:ErrorMessage("You cannot interact with PvP flagged players", 1, 0.25, 0)
+            HCWarn:ErrorMessage("You cannot target PvP flagged units", 1, 0.25, 0)
         end
     end
 end
@@ -97,38 +98,33 @@ HCWarn.target.timer:SetScript("OnUpdate", function()
 end)
 
 function HCWarn:pvpTargetLogic()
+    local function target()
+        if HCWarn_Settings.interact then
+            HCWarn.target:Show()
+        else            
+            ClearTarget()
+            HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)            
+        end
+    end
+
     if HCWarn.hardcore then
         -- You can assist PvP units without flagging
         -- You can not assist PvP player targets (Invalid Target)
         if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then       
-            if HCWarn_Settings.interact then
-                HCWarn.target:Show()
-            else            
-                ClearTarget()
-                HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)            
-            end
+            target()
         end
     else
         -- not hardcore
         -- You can not assist PvP units without flagging
         if UnitIsPVP("target") and (not IsInInstance()) then
-            if HCWarn_Settings.interact then
-                HCWarn.target:Show()
-            else
-                if UnitIsPlayer("target") then        
-                    ClearTarget()
-                    HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
-                else
-                    HCWarn.target:Show()
-                end
-            end
+            target()
         end
     end
 end
 
 function HCWarn:pvpTarget()
     HCWarn.target:Hide()
-    if not HCWarn_Settings.target then return end    
+    -- if not HCWarn_Settings.target then return end   
     if HCWarn.unitscan then
         HCWarn.target.time = GetTime() + 0.001
         HCWarn.target.timer:Show()
@@ -157,19 +153,13 @@ function HCWarn:mouseover()
     end    
 end
 
-function HCWarn:reset()
-    HCWarn_Settings.interact = false
-    HCWarn_Settings.sound = true
-    HCWarn_Settings.border = true
-    HCWarn_Settings.player = true
-    HCWarn_Settings.target = true
-    HCWarn.inInstance = nil
-    HCWarn:mapUpdate(true)
-    HCWarn:pvpPlayer()
-    HCWarn:pvpTarget()
+function HCWarn:quest()
+    if HCWarn_Settings.quest then
+        HCWarn.quests = HCWarn_quests(HCWarn.faction)
+    else
+        HCWarn.quests = nil
+    end
 end
-
-
 
 function HCWarn:findQuest(title, giver, objective)    
     for quest, table in pairs(HCWarn.quests) do
@@ -257,19 +247,32 @@ function HCWarn:questFinished()
     QuestFrameAcceptButton:SetTextColor(1, 0.82, 0)    
 end
 
+function HCWarn:reset()
+    HCWarn_Settings.interact = false
+    HCWarn_Settings.sound = true
+    HCWarn_Settings.border = true
+    HCWarn_Settings.player = true
+    HCWarn_Settings.target = true
+    HCWarn_Settings.quest = true
+    HCWarn.inInstance = nil
+    HCWarn:mapUpdate(true)
+    HCWarn:pvpPlayer()
+    HCWarn:pvpTarget()
+end
+
 local function HCWarn_commands(msg, editbox)
     local function message(setting, name)
         local state = "off"
         if setting then state = "on" end
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn: "..name.." is "..state..".", 1, 0.5, 0)
     end
-    if msg == "interact" then
+    if msg == "target" then
         if HCWarn_Settings.interact then
             HCWarn_Settings.interact = false
         else
             HCWarn_Settings.interact = true
         end
-        message(HCWarn_Settings.interact, "Interaction")
+        message(HCWarn_Settings.interact, "PvP targeting")
         HCWarn:mouseover()        
         HCWarn:pvpTarget()
         if HCWarn_Settings.target then
@@ -290,7 +293,7 @@ local function HCWarn_commands(msg, editbox)
         end        
         message(HCWarn_Settings.border, "Border")
         HCWarn:pvpPlayer()
-    elseif msg == "player" then
+    elseif msg == "warn player" then
         if HCWarn_Settings.player then
             HCWarn_Settings.player = false
         else
@@ -298,24 +301,33 @@ local function HCWarn_commands(msg, editbox)
         end
         message(HCWarn_Settings.player, "Player PvP warning")
         HCWarn:pvpPlayer()
-    elseif msg == "target" then
-        if HCWarn_Settings.target then
-            HCWarn_Settings.target = false
+    -- elseif msg == "warn target" then
+    --     if HCWarn_Settings.target then
+    --         HCWarn_Settings.target = false
+    --     else
+    --         HCWarn_Settings.target = true
+    --     end
+    --     message(HCWarn_Settings.target, "Target PvP warning")
+    --     HCWarn:pvpTarget()
+    elseif msg == "quest" then
+        if HCWarn_Settings.quest then
+            HCWarn_Settings.quest = false
         else
-            HCWarn_Settings.target = true
+            HCWarn_Settings.quest = true
         end
-        message(HCWarn_Settings.target, "Target PvP warning")
-        HCWarn:pvpTarget()
+        message(HCWarn_Settings.quest, "Quest PvP warning")
+        HCWarn:quest()
     elseif msg == "reset" then
         HCWarn:reset()
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn: Settings reset.", 1, 0.5, 0)
     else
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn usage:", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn interact - toggle interaction with PvP flagged attackable targets", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn target - toggle targeting PvP flagged units", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn sound - toggle PvP warning sound", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn border - toggle PvP warning border", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn player - toggle PvP warning for your character", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn target - toggle PvP warning for your target", 1, 0.5, 0)        
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn warn player - toggle PvP warning for your character", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn quest - toggle PvP warning for quests", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reset - reset settings", 1, 0.5, 0)      
     end
 end
 
@@ -342,10 +354,10 @@ HCWarn:SetScript("OnEvent", function()
             this.login = true
             HCWarn:mouseover()
             HCWarn.hardcore = HCWarn:checkHardcore()
-            HCWarn.faction = UnitFactionGroup("player")
-            HCWarn.quests = HCWarn_quests(HCWarn.faction)
+            HCWarn.faction = UnitFactionGroup("player")           
             HCWarn:pvpPlayer()
             HCWarn:mapUpdate(true)
+            HCWarn:quest()
             if IsAddOnLoaded("unitscan") or IsAddOnLoaded("unitscan-turtle") then
                 HCWarn.unitscan = true
             end
@@ -361,8 +373,12 @@ HCWarn:SetScript("OnEvent", function()
             HCWarn:pvpTarget()  
         end
     elseif event == "QUEST_DETAIL" then
-        HCWarn:questDetail()
+        if HCWarn_Settings.quest then
+            HCWarn:questDetail()
+        end
     elseif event == "QUEST_FINISHED" then
-        HCWarn:questFinished()
+        if HCWarn_Settings.quest or HCWarn.pvpQuest then
+            HCWarn:questFinished()
+        end
     end
 end)
