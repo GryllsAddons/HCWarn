@@ -6,6 +6,8 @@ If you are flagged, a warning will be displayed and a screen border will be show
 
 The addon includes a interact setting to help prevent flagging yourself for pvp.    
 
+#### The interact setting is OFF by default - this setting is saved per character. You can toggle this setting by using /hcwarn interact
+
 #### If you are hardcore:     
 If the interact setting is **ON** and you have an PVP flagged attackable target, a warning will be displayed.    
 If the interact setting is **OFF** and you have an PVP flagged attackable target, the target will be instantly cleared.
@@ -21,7 +23,7 @@ You can prevent casts on a flagged unit by using this setting with the mouseover
 The addon includes a warning for quests that involve the potential to flag yourself for pvp ([based on this post](https://forum.turtle-wow.org/viewtopic.php?f=37&t=4490)).     
 A warning will show in the quest detail window - mouseover the warning to show the details.     
 
-### The interact setting is OFF by default. This setting is saved per character.
+
 
 ### Usage
 /hcwarn or /hcw    
