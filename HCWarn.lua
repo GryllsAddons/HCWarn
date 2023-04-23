@@ -97,22 +97,25 @@ HCWarn.target.timer:SetScript("OnUpdate", function()
 end)
 
 function HCWarn:pvpTargetLogic()
-    if UnitIsPVP("target") and (not IsInInstance()) then
-        if HCWarn.hardcore then
-            if UnitCanAttack("player", "target") then
-                if HCWarn_Settings.interact then
-                    HCWarn.target:Show()
-                else
-                    ClearTarget()
-                    HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
-                end
+    if HCWarn.hardcore then
+        -- You can assist PvP units without flagging
+        -- You can not assist PvP player targets (Invalid Target)
+        if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then       
+            if HCWarn_Settings.interact then
+                HCWarn.target:Show()
+            else            
+                ClearTarget()
+                HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)            
             end
-        else
-            -- not hardcore
+        end
+    else
+        -- not hardcore
+        -- You can not assist PvP units without flagging
+        if UnitIsPVP("target") and (not IsInInstance()) then
             if HCWarn_Settings.interact then
                 HCWarn.target:Show()
             else
-                if UnitIsPlayer("target") then
+                if UnitIsPlayer("target") then        
                     ClearTarget()
                     HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
                 else
@@ -139,7 +142,7 @@ function HCWarn:checkHardcore()
         local spellName, spellRank = GetSpellName(slot, BOOKTYPE_SPELL)
         if not spellName then break end
         if spellName == "Hardcore" and spellRank == "Challenge" then
-            DEFAULT_CHAT_FRAME:AddMessage("You are hardcore")
+            -- DEFAULT_CHAT_FRAME:AddMessage("You are hardcore")
             return true
         end
     end
