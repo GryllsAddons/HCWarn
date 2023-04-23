@@ -2,7 +2,8 @@
 ## Title: HCWarn
 ## Author: Grylls
 ## Notes: Helps prevent accidental flagging and warns when PvP flagged
-## Version: 4
+## Version: 5
 ## SavedVariablesPerCharacter: HCWarn_Settings
 
 HCWarn.lua
+Quests.lua

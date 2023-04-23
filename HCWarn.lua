@@ -1,8 +1,12 @@
 HCWarn_Settings = {
     interact = false,
+    sound = true,
+    border = true,
+    player = true,
+    target = true
 }
 
-local HCWarn = CreateFrame("Frame")
+HCWarn = CreateFrame("Frame")
 
 HCWarn.border = CreateFrame("Frame")
 HCWarn.border:SetAllPoints(UIParent)
@@ -10,89 +14,294 @@ HCWarn.border:SetBackdrop({edgeFile = "Interface\\AddOns\\HCWarn\\media\\border"
 HCWarn.border:SetBackdropBorderColor(1, 0.25, 0)
 HCWarn.border:Hide()
 
-HCWarn.player = HCWarn.border:CreateFontString("Status", "LOW", "GameFontNormal")
+HCWarn.player = HCWarn:CreateFontString(nil, "LOW", "GameFontNormal")
 HCWarn.player:SetFont(DAMAGE_TEXT_FONT, 12, "NONE")
 HCWarn.player:SetPoint("TOP", UIErrorsFrame, "BOTTOM", 0, -10)
-HCWarn.player:SetText("YOU ARE PVP FLAGGED!")
+HCWarn.player:SetText("You are PvP flagged!")
 HCWarn.player:SetTextColor(1, 0.25, 0)
 HCWarn.player:Hide()
 
-HCWarn.target = HCWarn:CreateFontString("Status", "LOW", "GameFontNormal")
+HCWarn.target = HCWarn:CreateFontString(nil, "LOW", "GameFontNormal")
 HCWarn.target:SetFont(DAMAGE_TEXT_FONT, 12, "NONE")
 HCWarn.target:SetPoint("TOP", HCWarn.player, "BOTTOM", 0, -5)
-HCWarn.target:SetText("TARGET IS PVP FLAGGED!")
+HCWarn.target:SetText("Target is PvP flagged!")
 HCWarn.target:SetTextColor(1, 0.5, 0)
 HCWarn.target:Hide()
 
-function HCWarn:mapUpdate()
+function HCWarn:mapUpdate(reset)
     if IsInInstance() then
         HCWarn.inInstance = true
+        HCWarn:pvpPlayer()
     elseif HCWarn.inInstance then
-            -- left instance
+        -- left instance
         HCWarn.inInstance = nil
+        HCWarn:pvpPlayer()
         HCWarn:interactMessage()
-    elseif not HCWarn.continent then
-            -- entering world
+    elseif reset then
+        -- entering world / reset
+        HCWarn:pvpPlayer()
         HCWarn:interactMessage()
     end
 end
 
 function HCWarn:interactMessage()
+    if not HCWarn_Settings.target then return end
     if UnitIsDead("player") then return end
     if HCWarn_Settings.interact then
-        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You can interact with pvp flagged targets", 1, 0.5, 0)
-        UIErrorsFrame:AddMessage("You can interact with pvp flagged targets", 1, 0.5, 0)
+        HCWarn:ErrorMessage("You can interact with PvP flagged enemies", 1, 0.5, 0)
     else
-        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: You cannot interact with pvp flagged targets", 1, 0.25, 0)
-        UIErrorsFrame:AddMessage("You cannot interact with pvp flagged targets", 1, 0.25, 0)
+        HCWarn:ErrorMessage("You cannot interact with PvP flagged enemies", 1, 0.25, 0)
     end
 end
 
-function HCWarn:Alert()
+function HCWarn:Sound()
+    if not HCWarn_Settings.sound then return end
     PlaySoundFile("Interface\\AddOns\\HCWarn\\media\\"..HCWarn.faction..".ogg")
 end
 
-function HCWarn:setGlobal()
-    -- set global interact variable for /stcast support
-    if not HCWarn_Settings.interact then
-        HCWarn_nointeract = true
-    else
-        HCWarn_nointeract = nil
-    end
+function HCWarn:ErrorMessage(message)
+    UIErrorsFrame:AddMessage(message, 1, 0.25, 0)
 end
 
 function HCWarn:pvpPlayer()
     HCWarn.player:Hide()
     HCWarn.border:Hide()
-    if UnitIsPVP("player") then
+    if not HCWarn_Settings.player then return end
+    if UnitIsPVP("player") and (not IsInInstance()) then
         SetCVar('MasterSoundEffects', 0)
         SetCVar('MasterSoundEffects', 1)
-        HCWarn:Alert()
+        HCWarn:Sound()
         HCWarn.player:Show()
-        HCWarn.border:Show()
+        if HCWarn_Settings.border then
+            HCWarn.border:Show()
+        end
+    end
+end
+
+HCWarn.target.timer = CreateFrame("Frame", nil, HCWarn)
+HCWarn.target.timer:Hide()
+HCWarn.target.timer:SetScript("OnUpdate", function()
+    if GetTime() >= HCWarn.target.time then
+        HCWarn.target.time = nil
+        HCWarn:pvpTargetLogic()
+        this:Hide()
+    end
+end)
+
+function HCWarn:pvpTargetLogic()
+    local function target()
+        if HCWarn_Settings.interact then
+            HCWarn.target:Show()
+        else
+            ClearTarget()
+            HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
+        end
+    end
+
+    -- if HCWarn.hardcore then
+    --     -- include friendy units for hardcore
+    --     if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then
+    --         target()
+    --     end
+    -- else
+    --     if UnitIsPVP("target") and UnitIsPlayer("target") and (not IsInInstance()) then
+    --         target()
+    --     end
+    -- end
+
+    if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then
+        target()
     end
 end
 
 function HCWarn:pvpTarget()
     HCWarn.target:Hide()
-    if UnitIsPVP("target") and UnitCanAttack("player", "target") then
-        if HCWarn_Settings.interact then
-            HCWarn.target:Show()
-        else
-            ClearTarget()
-            UIErrorsFrame:AddMessage("Target is PVP flagged", 1, 0.25, 0)
+    if not HCWarn_Settings.target then return end    
+    if HCWarn.unitscan then
+        HCWarn.target.time = GetTime() + 0.001
+        HCWarn.target.timer:Show()
+    else
+        HCWarn:pvpTargetLogic()
+    end
+end
+
+function HCWarn:interactSetting()
+    if HCWarn_Settings.interact then
+        HCWarn.interact = true
+    else
+        HCWarn.interact = nil
+    end
+end
+
+function HCWarn:checkHardcore()
+    for slot = 1, 24 do
+        local spellName, spellRank = GetSpellName(slot, BOOKTYPE_SPELL)
+        if not spellName then break end
+        if spellName == "Hardcore" and spellRank == "Challenge" then
+            DEFAULT_CHAT_FRAME:AddMessage("You are hardcore")
+            return true
         end
     end
 end
 
-local function HCWarn_commands(msg, editbox)
-    if HCWarn_Settings.interact then
-        HCWarn_Settings.interact = false
-    else
-        HCWarn_Settings.interact = true
+function HCWarn:reset()
+    HCWarn_Settings.interact = false
+    HCWarn_Settings.sound = true
+    HCWarn_Settings.border = true
+    HCWarn_Settings.player = true
+    HCWarn_Settings.target = true
+    HCWarn.inInstance = nil
+    HCWarn:mapUpdate(true)
+    HCWarn:pvpPlayer()
+    HCWarn:pvpTarget()
+end
+
+function HCWarn:findQuest(title, giver, objective)    
+    for quest, table in pairs(HCWarn.quests) do
+        if (strupper(quest) == strupper(title)) and (table[1].giver == giver) then
+            local _, _, match = string.find(objective, "("..table[1].objective..")")
+            if match then
+                -- DEFAULT_CHAT_FRAME:AddMessage("HCWarn: Quest Match", 1, 0.5, 0)
+                return table[1]
+            end
+        end
     end
-    HCWarn:setGlobal()
-    HCWarn:interactMessage()
+end
+
+function HCWarn:questPVP(table)
+    if table.pvp then
+        return "Attacking "..table.pvp.." will flag you for PvP."
+    else
+        return "No information available."
+    end
+end
+
+function HCWarn:questDetail()
+    if not QuestFrameDetailPanel.pvp then        
+        QuestFrameDetailPanel.pvp = CreateFrame("Frame", nil, QuestFrameDetailPanel)
+        QuestFrameDetailPanel.pvp:Hide()
+        QuestFrameDetailPanel.pvp:SetWidth(104)
+        QuestFrameDetailPanel.pvp:SetHeight(30)
+        QuestFrameDetailPanel.pvp:SetPoint("TOP", QuestNpcNameFrame, "BOTTOM", 0, -8)
+        QuestFrameDetailPanel.pvp:SetBackdrop({
+            bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile = true, tileSize = 14, edgeSize = 14,
+            insets = { left = 4, right = 4, top = 4, bottom = 4 }
+        })
+        QuestFrameDetailPanel.pvp:SetBackdropColor(1, .25, 0, .5)
+        QuestFrameDetailPanel.pvp:SetBackdropBorderColor(1, .25, 0)
+        QuestFrameDetailPanel.pvp:EnableMouse(true)
+
+        QuestFrameDetailPanel.pvp.text = QuestFrameDetailPanel.pvp:CreateFontString("Status", "LOW", "GameFontNormal")
+        QuestFrameDetailPanel.pvp.text:SetFont(DAMAGE_TEXT_FONT, 12, "OUTLINE")
+        QuestFrameDetailPanel.pvp.text:SetPoint("RIGHT", QuestFrameDetailPanel.pvp, "RIGHT", -5, 0)
+        QuestFrameDetailPanel.pvp.text:SetFontObject(GameFontWhite)
+        QuestFrameDetailPanel.pvp.text:SetText("PvP Quest!")
+        QuestFrameDetailPanel.pvp.text:SetTextColor(1, 0.25, 0)
+
+        QuestFrameDetailPanel.pvp.icon = QuestFrameDetailPanel.pvp:CreateTexture(nil, "ARTWORK")
+        local icon = "Interface\\Icons\\Inv_bannerpvp_01"
+        if HCWarn.faction == "Alliance" then
+            icon = "Interface\\Icons\\Inv_bannerpvp_02"
+        end
+        QuestFrameDetailPanel.pvp.icon:SetTexture(icon)        
+        QuestFrameDetailPanel.pvp.icon:SetWidth(20)
+        QuestFrameDetailPanel.pvp.icon:SetHeight(20)
+        QuestFrameDetailPanel.pvp.icon:SetPoint("LEFT", QuestFrameDetailPanel.pvp, "LEFT", 5, 0)
+
+        QuestFrameDetailPanel.pvp.icon.border = CreateFrame("Frame", nil, QuestFrameDetailPanel.pvp)
+        QuestFrameDetailPanel.pvp.icon.border:SetPoint("TOPLEFT", QuestFrameDetailPanel.pvp.icon, "TOPLEFT", -2, 2)
+        QuestFrameDetailPanel.pvp.icon.border:SetPoint("BOTTOMRIGHT", QuestFrameDetailPanel.pvp.icon, "BOTTOMRIGHT", 2, -2)
+        QuestFrameDetailPanel.pvp.icon.border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 12})
+        QuestFrameDetailPanel.pvp.icon.border:SetBackdropBorderColor(1, .25, 0)
+
+        QuestFrameDetailPanel.pvp:SetScript("OnEnter", function()
+            GameTooltip:ClearLines()
+            GameTooltip:SetOwner(this, ANCHOR_BOTTOMLEFT)
+
+            GameTooltip:AddLine(HCWarn:questPVP(HCWarn.pvpQuest))
+            GameTooltip:Show()
+        end)
+
+        QuestFrameDetailPanel.pvp:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+    end
+
+    HCWarn.pvpQuest = HCWarn:findQuest(GetTitleText(), QuestFrameNpcNameText:GetText(), GetObjectiveText())
+    if HCWarn.pvpQuest then
+        QuestFrameDetailPanel.pvp:Show()
+        QuestFrameAcceptButton:SetTextColor(1, .25, 0)        
+    end
+end
+
+function HCWarn:questFinished()
+    HCWarn.pvpQuest = nil
+    QuestFrameDetailPanel.pvp:Hide()
+    QuestFrameAcceptButton:SetTextColor(1, 0.82, 0)    
+end
+
+local function HCWarn_commands(msg, editbox)
+    local function message(setting, name)
+        local state = "off"
+        if setting then state = "on" end
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: "..name.." is "..state..".", 1, 0.5, 0)
+    end
+    if msg == "interact" then
+        if HCWarn_Settings.interact then
+            HCWarn_Settings.interact = false
+        else
+            HCWarn_Settings.interact = true
+        end
+        HCWarn:interactSetting()
+        message(HCWarn_Settings.interact, "Interaction")
+        HCWarn:pvpTarget()
+        if HCWarn_Settings.target then
+            HCWarn:interactMessage()
+        end
+    elseif msg == "sound" then
+        if HCWarn_Settings.sound then
+            HCWarn_Settings.sound = false
+        else
+            HCWarn_Settings.sound = true
+        end
+        message(HCWarn_Settings.sound, "Sound")
+    elseif msg == "border" then
+        if HCWarn_Settings.border then
+            HCWarn_Settings.border = false
+        else
+            HCWarn_Settings.border = true            
+        end        
+        message(HCWarn_Settings.border, "Border")
+        HCWarn:pvpPlayer()
+    elseif msg == "player" then
+        if HCWarn_Settings.player then
+            HCWarn_Settings.player = false
+        else
+            HCWarn_Settings.player = true
+        end
+        message(HCWarn_Settings.player, "Player PvP warning")
+        HCWarn:pvpPlayer()
+    elseif msg == "target" then
+        if HCWarn_Settings.target then
+            HCWarn_Settings.target = false
+        else
+            HCWarn_Settings.target = true
+        end
+        message(HCWarn_Settings.target, "Target PvP warning")
+        HCWarn:pvpTarget()
+    elseif msg == "reset" then
+        HCWarn:reset()
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn: Settings reset.", 1, 0.5, 0)
+    else
+        DEFAULT_CHAT_FRAME:AddMessage("HCWarn usage:", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn interact - toggle interaction with PvP flagged attackable targets", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn sound - toggle PvP warning sound", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn border - toggle PvP warning border", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn player - toggle PvP warning for your character", 1, 0.5, 0)
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn target - toggle PvP warning for your target", 1, 0.5, 0)        
+    end
 end
 
 HCWarn:RegisterEvent("ADDON_LOADED")
@@ -101,6 +310,8 @@ HCWarn:RegisterEvent("WORLD_MAP_UPDATE")
 HCWarn:RegisterEvent("PLAYER_TARGET_CHANGED")
 HCWarn:RegisterEvent("UNIT_FACTION", "player")
 HCWarn:RegisterEvent("UNIT_FACTION", "target")
+HCWarn:RegisterEvent("QUEST_DETAIL")
+HCWarn:RegisterEvent("QUEST_FINISHED")
 
 HCWarn:SetScript("OnEvent", function()
     if event == "ADDON_LOADED" then
@@ -109,25 +320,34 @@ HCWarn:SetScript("OnEvent", function()
             SLASH_HCWARN1 = "/hcwarn"
             SLASH_HCWARN2 = "/hcw"
             SlashCmdList["HCWARN"] = HCWarn_commands
-            HCWarn:setGlobal()
-            DEFAULT_CHAT_FRAME:AddMessage("HCWarn Loaded! /hcwarn", 1, 0.5, 0)
+            DEFAULT_CHAT_FRAME:AddMessage("HCWarn Loaded! /hcwarn or /hcw", 1, 0.5, 0)
         end    
     elseif event == "PLAYER_ENTERING_WORLD" then
         if not this.login then
             this.login = true
+            HCWarn:interactSetting() -- HCWarn.interact
+            HCWarn.hardcore = HCWarn:checkHardcore()
             HCWarn.faction = UnitFactionGroup("player")
+            HCWarn:quests() -- HCWarn.quests
             HCWarn:pvpPlayer()
-            HCWarn:mapUpdate()
+            HCWarn:mapUpdate(true)
+            if IsAddOnLoaded("unitscan") or IsAddOnLoaded("unitscan-turtle") then
+                HCWarn.unitscan = true
+            end
         end
     elseif event == "WORLD_MAP_UPDATE" then
         HCWarn:mapUpdate()
-    elseif event == "PLAYER_TARGET_CHANGED" then
-        HCWarn:pvpTarget()
+    elseif event == "PLAYER_TARGET_CHANGED" then        
+            HCWarn:pvpTarget()
     elseif event == "UNIT_FACTION" then
         if arg1 == "player" then
             HCWarn:pvpPlayer()
         elseif arg1 == "target" then
             HCWarn:pvpTarget()  
         end
+    elseif event == "QUEST_DETAIL" then
+        HCWarn:questDetail()
+    elseif event == "QUEST_FINISHED" then
+        HCWarn:questFinished()
     end
 end)
