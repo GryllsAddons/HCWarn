@@ -6,22 +6,28 @@ If you are flagged, a warning will be displayed and a screen border will be show
 
 The addon includes a interact setting to help prevent flagging yourself for pvp.    
 
-If the interact setting is **ON** and you have an attackable flagged target, a warning will be displayed.    
-If the interact setting is **OFF** and you have an attackable flagged target, the target will be instantly cleared.
+#### If you are hardcore:     
+If the interact setting is **ON** and you have an PVP flagged attackable target, a warning will be displayed.    
+If the interact setting is **OFF** and you have an PVP flagged attackable target, the target will be instantly cleared.
 
+#### If you are NOT hardcore:     
+If the interact setting is **ON** and you have an PVP flagged player, a warning will be displayed.    
+If the interact setting is **OFF** and you have an PVP flagged player, the target will be instantly cleared.     
+
+The addon will not display warnings or clear targets while in instances.     
 The interact setting will be displayed when logging in or when leaving instances.  
 You can prevent casts on a flagged unit by using this setting with the mouseover mod (/stcast) included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods).     
 
 The addon includes a warning for quests that involve the potential to flag yourself for pvp ([based on this post](https://forum.turtle-wow.org/viewtopic.php?f=37&t=4490)).     
 A warning will show in the quest detail window - mouseover the warning to show the details.     
 
-#### The interact setting is OFF by default. This setting is saved per character.
+### The interact setting is OFF by default. This setting is saved per character.
 
 ### Usage
 /hcwarn or /hcw    
 
 ### Commands
-/hcwarn interact - toggle interaction with PvP flagged attackable targets     
+/hcwarn interact - toggle interaction with PvP flagged targets     
 /hcwarn sound - toggle PvP warning sound     
 /hcwarn border - toggle PvP warning border     
 /hcwarn player - toggle PvP warning for your character     
