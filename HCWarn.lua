@@ -1,5 +1,5 @@
 HCWarn_Settings = {
-    interact = false,
+    interact = true,
     sound = true,
     border = true,
     reminder = true,
