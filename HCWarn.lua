@@ -267,6 +267,8 @@ function HCWarn:reset()
     HCWarn_Settings.player = true
     HCWarn_Settings.target = true
     HCWarn_Settings.quest = true
+    HCWarn_Settings.reminder = true
+    HCWarn_Settings.message = true
     HCWarn.inInstance = nil
     HCWarn:mapUpdate(true)
     HCWarn:pvpPlayer()
