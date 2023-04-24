@@ -38,4 +38,5 @@ if not UnitIsPVP("target") then CastSpellByName("Heal") end
 ```
 ### Addon Compatibility
 The addon is compatible with [unitscan](https://github.com/shirsig/unitscan-vanilla) and [unitscan-turtle](https://github.com/GryllsAddons/unitscan-turtle).    
+
 For other useful hardcore addons, please see [HCRank](https://github.com/GryllsAddons/HCRank) and [codex](https://github.com/nakda/codex).  
