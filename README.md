@@ -28,11 +28,11 @@ For example, if you use the /stcast macro below and the target setting is off yo
 ```
 /stcast Heal
 ```
-Other ways to prevent casts include using the "nopvp" condition included in [Roid-Macros](https://github.com/DennisWG/Roid-Macros):
+You can also prevent casts on PvP flagged units by using the *****nopvp***** condition in [Roid-Macros](https://github.com/DennisWG/Roid-Macros).
 ```
 /cast [nopvp nodead] Heal
 ```
-You can also use *****not UnitIsPVP("target")***** in a macro:
+You can also use *****not UnitIsPVP("target")***** in a macro without addons.
 ```
 if not UnitIsPVP("target") then CastSpellByName("Heal") end
 ```
