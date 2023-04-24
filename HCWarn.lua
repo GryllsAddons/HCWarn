@@ -50,17 +50,9 @@ function HCWarn:interactMessage()
     if (not HCWarn_Settings.target) or (not HCWarn_Settings.reminder) then return end
     if UnitIsDead("player") then return end
     if HCWarn_Settings.interact then
-        if HCWarn.hardcore then
-            HCWarn:ErrorMessage("You can target PvP flagged enemies", 1, 0.5, 0)
-        else
-            HCWarn:ErrorMessage("You can target PvP flagged units", 1, 0.5, 0)
-        end
+        HCWarn:ErrorMessage("You can target PvP flagged enemies", 1, 0.5, 0)
     else
-        if HCWarn.hardcore then
-            HCWarn:ErrorMessage("You cannot target PvP flagged enemies", 1, 0.25, 0)
-        else
-            HCWarn:ErrorMessage("You cannot target PvP flagged units", 1, 0.25, 0)
-        end
+        HCWarn:ErrorMessage("You cannot target PvP flagged enemies", 1, 0.25, 0)
     end
 end
 
@@ -99,26 +91,12 @@ HCWarn.target.timer:SetScript("OnUpdate", function()
 end)
 
 function HCWarn:pvpTargetLogic()
-    local function target()
-        if HCWarn_Settings.interact then
+    if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then
+        if HCWarn_Settings.interact or UnitIsPVP("player") then -- if we are flagged, don't clear the target
             HCWarn.target:Show()
-        else            
+        elseif not UnitIsPVP("player") then -- only clear if we are not flagged
             ClearTarget()
             HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
-        end
-    end
-
-    if HCWarn.hardcore then
-        -- You can assist PvP units without flagging
-        -- You can not assist PvP player targets (Invalid Target)
-        if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then       
-            target()
-        end
-    else
-        -- not hardcore
-        -- You can not assist PvP units without flagging
-        if UnitIsPVP("target") and (not IsInInstance()) then
-            target()
         end
     end
 end
@@ -132,26 +110,6 @@ function HCWarn:pvpTarget()
     else
         HCWarn:pvpTargetLogic()
     end
-end
-
-function HCWarn:checkHardcore()
-    for slot = 1, 24 do
-        local spellName, spellRank = GetSpellName(slot, BOOKTYPE_SPELL)
-        if not spellName then break end
-        if spellName == "Hardcore" and spellRank == "Challenge" then
-            -- DEFAULT_CHAT_FRAME:AddMessage("You are hardcore")
-            return true
-        end
-    end
-end
-
-function HCWarn:mouseover()
-    -- set global variable for /stcast mouseover
-    if HCWarn_Settings.interact then
-        HCWarn_interact = true
-    else
-        HCWarn_interact = nil
-    end    
 end
 
 function HCWarn:quest()
@@ -284,7 +242,6 @@ local function HCWarn_commands(msg, editbox)
             HCWarn_Settings.interact = true
         end
         message(HCWarn_Settings.interact, "PvP targeting")
-        HCWarn:mouseover()        
         HCWarn:pvpTarget()
         if HCWarn_Settings.target then
             HCWarn:interactMessage()
@@ -372,8 +329,6 @@ HCWarn:SetScript("OnEvent", function()
     elseif event == "PLAYER_ENTERING_WORLD" then
         if not this.login then
             this.login = true
-            HCWarn:mouseover()
-            HCWarn.hardcore = HCWarn:checkHardcore()
             HCWarn.faction = UnitFactionGroup("player")           
             HCWarn:pvpPlayer()
             HCWarn:mapUpdate(true)
@@ -384,12 +339,12 @@ HCWarn:SetScript("OnEvent", function()
         end
     elseif event == "WORLD_MAP_UPDATE" then
         HCWarn:mapUpdate()
-    elseif event == "PLAYER_TARGET_CHANGED" then        
+    elseif event == "PLAYER_TARGET_CHANGED" then
             HCWarn:pvpTarget()
     elseif event == "UNIT_FACTION" then
         if arg1 == "player" then
             HCWarn:pvpPlayer()
-        elseif arg1 == "target" then
+        elseif arg1 == "target" then            
             HCWarn:pvpTarget()  
         end
     elseif event == "QUEST_DETAIL" then
