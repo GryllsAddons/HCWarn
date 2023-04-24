@@ -261,7 +261,7 @@ function HCWarn:questFinished()
 end
 
 function HCWarn:reset()
-    HCWarn_Settings.interact = false
+    HCWarn_Settings.interact = true
     HCWarn_Settings.sound = true
     HCWarn_Settings.border = true
     HCWarn_Settings.player = true
