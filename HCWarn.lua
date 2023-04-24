@@ -3,7 +3,6 @@ HCWarn_Settings = {
     sound = true,
     border = true,
     reminder = true,
-    message = true,
     player = true,
     target = true,
     quest = true
@@ -105,9 +104,7 @@ function HCWarn:pvpTargetLogic()
             HCWarn.target:Show()
         else            
             ClearTarget()
-            if HCWarn_Settings.message then
-                HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
-            end
+            HCWarn:ErrorMessage("Target is PvP flagged", 1, 0.25, 0)
         end
     end
 
@@ -268,7 +265,6 @@ function HCWarn:reset()
     HCWarn_Settings.target = true
     HCWarn_Settings.quest = true
     HCWarn_Settings.reminder = true
-    HCWarn_Settings.message = true
     HCWarn.inInstance = nil
     HCWarn:mapUpdate(true)
     HCWarn:pvpPlayer()
@@ -339,13 +335,6 @@ local function HCWarn_commands(msg, editbox)
             HCWarn_Settings.reminder = true
         end
         message(HCWarn_Settings.reminder, "Target reminder")
-    elseif msg == "message" then
-        if HCWarn_Settings.message then
-            HCWarn_Settings.message = false
-        else
-            HCWarn_Settings.message = true
-        end
-        message(HCWarn_Settings.message, "Target message")
     elseif msg == "reset" then
         HCWarn:reset()
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn: Settings reset.", 1, 0.5, 0)
@@ -356,7 +345,6 @@ local function HCWarn_commands(msg, editbox)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn warn target - toggle PvP warning for your target", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn quest - toggle PvP warning for quests", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reminder - toggle 'You can target' reminder", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn message - toggle 'Target is PvP flagged' message", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn sound - toggle player PvP warning sound", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn border - toggle player PvP warning border", 1, 0.5, 0)        
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reset - reset settings", 1, 0.5, 0)  
