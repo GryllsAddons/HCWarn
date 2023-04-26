@@ -14,7 +14,7 @@ You can toggle features of the addon by using the /hcwarn or /hcw command.
 ### Macros to prevent casting on PvP units
 If you are not using ShaguTweaks-Mods you can prevent casts on PvP flagged units by using the *****nopvp***** condition in [Roid-Macros](https://github.com/DennisWG/Roid-Macros).
 ```
-/cast [nopvp nodead] Heal
+/cast [@mouseover nopvp nodead] Heal
 ```
 You can also use *****not UnitIsPVP("target")***** in a macro without addons.
 ```
