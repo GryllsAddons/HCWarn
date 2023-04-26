@@ -4,7 +4,7 @@ The addon will not function while in instances.
 The addon is compatible with [unitscan](https://github.com/shirsig/unitscan-vanilla) and [unitscan-turtle](https://github.com/GryllsAddons/unitscan-turtle).
 
 ### Features
-You can enable or disable most features of the addon by using the /hcwarn or /hcw command.
+You can toggle features of the addon by using the /hcwarn or /hcw command.
 | Feature | Description |
 | --- | --- |
 | Player Warning | <b>If you are PvP flagged</b><li>A warning will be displayed</li><li>A screen border will be shown</li><li>A PvP sound will be played.</li> |
