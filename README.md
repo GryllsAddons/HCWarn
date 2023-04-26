@@ -1,7 +1,6 @@
 ### Description
 This addon helps prevent accidental PvP flagging and warns when flagged.    
 The addon will not function while in instances.    
-The addon is compatible with [unitscan](https://github.com/shirsig/unitscan-vanilla) and [unitscan-turtle](https://github.com/GryllsAddons/unitscan-turtle).
 
 ### Features
 You can toggle features of the addon by using the /hcwarn or /hcw command.
