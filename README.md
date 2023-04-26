@@ -12,7 +12,7 @@ You can toggle features of the addon by using the /hcwarn or /hcw command.
 | Mouseover support | The mouseover mod included in [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods) supports HCWarn.<br>The mod will prevent any /stcast macros from casting on PvP enemies when outside instances unless you are PvP flagged. |
 
 ### Macros to prevent casting on PvP units
-If you are not using ShaguTweaks-Mods you can prevent casts on PvP flagged units by using the *****nopvp***** condition in [Roid-Macros](https://github.com/DennisWG/Roid-Macros).
+If you are not using [ShaguTweaks-Mods](https://github.com/GryllsAddons/ShaguTweaks-Mods) you can prevent casts on PvP flagged units by using the *****nopvp***** condition in [Roid-Macros](https://github.com/DennisWG/Roid-Macros).
 ```
 /cast [@mouseover nopvp nodead] Heal
 ```
