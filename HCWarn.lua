@@ -5,7 +5,8 @@ HCWarn_Settings = {
     reminder = true,
     player = true,
     target = true,
-    quest = true
+    quest = true,
+    mouseover = true
 }
 
 local HCWarn = CreateFrame("Frame")
@@ -90,7 +91,7 @@ HCWarn.target.timer:SetScript("OnUpdate", function()
     end
 end)
 
-function HCWarn:pvpTargetLogic()
+function HCWarn:pvpTargetLogic()   
     if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then
         if HCWarn_Settings.interact or UnitIsPVP("player") then -- if we are flagged, don't clear the target
             HCWarn.target:Show()
@@ -215,6 +216,15 @@ function HCWarn:questFinished()
     QuestFrameAcceptButton:SetTextColor(1, 0.82, 0)    
 end
 
+function HCWarn:mouseover()
+    -- set global variable for /stcast
+    if HCWarn_Settings.mouseover then        
+        HCWarn_Mouseover = true
+    else
+        HCWarn_Mouseover = nil
+    end
+end
+
 function HCWarn:reset()
     HCWarn_Settings.interact = true
     HCWarn_Settings.sound = true
@@ -223,10 +233,14 @@ function HCWarn:reset()
     HCWarn_Settings.target = true
     HCWarn_Settings.quest = true
     HCWarn_Settings.reminder = true
-    HCWarn.inInstance = nil
-    HCWarn:mapUpdate(true)
+    HCWarn_Settings.mouseover = true
+    
     HCWarn:pvpPlayer()
     HCWarn:pvpTarget()
+    HCWarn:mouseover()
+    HCWarn.inInstance = nil
+    HCWarn:mapUpdate(true)
+    HCWarn:quest()
 end
 
 local function HCWarn_commands(msg, editbox)
@@ -292,6 +306,14 @@ local function HCWarn_commands(msg, editbox)
             HCWarn_Settings.reminder = true
         end
         message(HCWarn_Settings.reminder, "Target reminder")
+    elseif msg == "mouseover" then
+        if HCWarn_Settings.mouseover then
+            HCWarn_Settings.mouseover = false
+        else
+            HCWarn_Settings.mouseover = true
+        end
+        message(HCWarn_Settings.mouseover, "stcast mouseover")
+        HCWarn:mouseover()
     elseif msg == "reset" then
         HCWarn:reset()
         DEFAULT_CHAT_FRAME:AddMessage("HCWarn: Settings reset.", 1, 0.5, 0)
@@ -303,7 +325,8 @@ local function HCWarn_commands(msg, editbox)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn quest - toggle PvP warning for quests", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reminder - toggle 'You can target' reminder", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn sound - toggle player PvP warning sound", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn border - toggle player PvP warning border", 1, 0.5, 0)        
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn border - toggle player PvP warning border", 1, 0.5, 0)      
+        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn mouseover - toggle stcast mouseover integration", 1, 0.5, 0)  
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reset - reset settings", 1, 0.5, 0)  
     end
 end
@@ -329,7 +352,8 @@ HCWarn:SetScript("OnEvent", function()
     elseif event == "PLAYER_ENTERING_WORLD" then
         if not this.login then
             this.login = true
-            HCWarn.faction = UnitFactionGroup("player")           
+            HCWarn:mouseover()
+            HCWarn.faction = UnitFactionGroup("player")
             HCWarn:pvpPlayer()
             HCWarn:mapUpdate(true)
             HCWarn:quest()
