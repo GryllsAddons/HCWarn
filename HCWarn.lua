@@ -250,8 +250,10 @@ function HCWarn:mouseover()
     -- set global variable for /stcast
     if HCWarn_Settings.mouseover then        
         HCWarn_Mouseover = true
+        HCWarn_Hardcore = HCWarn.hardcore
     else
         HCWarn_Mouseover = nil
+        HCWarn_Hardcore = nil
     end
 end
 
