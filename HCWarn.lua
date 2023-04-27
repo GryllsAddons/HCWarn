@@ -163,6 +163,12 @@ function HCWarn:questPVP(table)
     end
 end
 
+function HCWarn:questInfo(table)
+    if table.info then
+        return table.info
+    end
+end
+
 function HCWarn:questDetail()
     if not QuestFrameDetailPanel.pvp then        
         QuestFrameDetailPanel.pvp = CreateFrame("Frame", nil, QuestFrameDetailPanel)
@@ -214,7 +220,9 @@ function HCWarn:questDetail()
             GameTooltip:ClearLines()
             GameTooltip:SetOwner(this, ANCHOR_BOTTOMLEFT)
 
+            GameTooltip:AddLine("PvP Quest", 1, .25, 0)
             GameTooltip:AddLine(HCWarn:questPVP(HCWarn.pvpQuest))
+            GameTooltip:AddLine(HCWarn:questInfo(HCWarn.pvpQuest))
             GameTooltip:Show()
         end)
 
