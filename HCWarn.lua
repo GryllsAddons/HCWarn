@@ -145,7 +145,7 @@ end
 
 function HCWarn:findQuest(title, giver, objective)    
     for quest, table in pairs(HCWarn.quests) do
-        if (strupper(quest) == strupper(title)) and (table[1].giver == giver) then
+        if (strupper(quest) == strupper(title)) and (strupper(table[1].giver) == strupper(giver)) then
             local _, _, match = string.find(objective, "("..table[1].objective..")")
             if match then
                 -- DEFAULT_CHAT_FRAME:AddMessage("HCWarn: Quest Match", 1, 0.5, 0)
