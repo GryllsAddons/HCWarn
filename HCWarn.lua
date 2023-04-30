@@ -155,6 +155,12 @@ function HCWarn:findQuest(title, giver, objective)
     end
 end
 
+function HCWarn:questType(table)
+    if table.type then
+        return table.type
+    end
+end
+
 function HCWarn:questPVP(table)
     if table.pvp then
         return "Attacking "..table.pvp.." will flag you for PvP."
@@ -187,12 +193,10 @@ function HCWarn:questDetail()
         QuestFrameDetailPanel.pvp:EnableMouse(true)
         
         QuestFrameDetailPanel.pvp.icon = QuestFrameDetailPanel.pvp:CreateTexture(nil, "ARTWORK")
-        local icon = "Interface\\Icons\\Inv_bannerpvp_01"
-        if HCWarn.faction == "Alliance" then
-            icon = "Interface\\Icons\\Inv_bannerpvp_02"
-        end
+        HCWarn.iconwarn = "Interface\\Icons\\Spell_Shadow_DeathScream"
+        HCWarn.iconpvp = "Interface\\Icons\\Ability_DualWield"        
+        QuestFrameDetailPanel.pvp.icon:SetTexture(HCWarn.iconpvp)
         local inset = 5
-        QuestFrameDetailPanel.pvp.icon:SetTexture(icon)        
         QuestFrameDetailPanel.pvp.icon:SetWidth(20)
         QuestFrameDetailPanel.pvp.icon:SetHeight(20)
         QuestFrameDetailPanel.pvp.icon:SetPoint("LEFT", QuestFrameDetailPanel.pvp, "LEFT", inset, 0)
@@ -206,9 +210,9 @@ function HCWarn:questDetail()
         QuestFrameDetailPanel.pvp.text = QuestFrameDetailPanel.pvp:CreateFontString("Status", "LOW", "GameFontNormal")
         QuestFrameDetailPanel.pvp.text:SetFont(DAMAGE_TEXT_FONT, 12, "OUTLINE")
         QuestFrameDetailPanel.pvp.text:SetPoint("LEFT", QuestFrameDetailPanel.pvp.icon, "RIGHT", 2, 0)
-        QuestFrameDetailPanel.pvp.text:SetFontObject(GameFontWhite)
-        QuestFrameDetailPanel.pvp.text:SetText("PvP Quest")
+        QuestFrameDetailPanel.pvp.text:SetFontObject(GameFontWhite)        
         QuestFrameDetailPanel.pvp.text:SetTextColor(1, 0.25, 0)
+        QuestFrameDetailPanel.pvp.text:SetText("PvP Quest")
 
         QuestFrameDetailPanel.pvp:SetWidth((inset*2)+QuestFrameDetailPanel.pvp.icon.border:GetWidth()+QuestFrameDetailPanel.pvp.text:GetWidth())
         if IsAddOnLoaded("pfUI") then
@@ -220,8 +224,13 @@ function HCWarn:questDetail()
             GameTooltip:ClearLines()
             GameTooltip:SetOwner(this, ANCHOR_BOTTOMLEFT)
 
-            GameTooltip:AddLine("PvP Quest", 1, .25, 0)
-            GameTooltip:AddLine(HCWarn:questPVP(HCWarn.pvpQuest))
+            local qtype = HCWarn:questType(HCWarn.pvpQuest)
+            if qtype == "pvp" then
+                GameTooltip:AddLine("PvP Warning", 1, .25, 0)
+                GameTooltip:AddLine(HCWarn:questPVP(HCWarn.pvpQuest))
+            elseif qtype == "warn" then
+                GameTooltip:AddLine("Quest Warning", 1, .25, 0)
+            end
             GameTooltip:AddLine(HCWarn:questInfo(HCWarn.pvpQuest))
             GameTooltip:Show()
         end)
@@ -233,6 +242,14 @@ function HCWarn:questDetail()
 
     HCWarn.pvpQuest = HCWarn:findQuest(GetTitleText(), QuestFrameNpcNameText:GetText(), GetObjectiveText())
     if HCWarn.pvpQuest then
+        local qtype = HCWarn:questType(HCWarn.pvpQuest)
+        if qtype == "pvp" then
+            QuestFrameDetailPanel.pvp.icon:SetTexture(HCWarn.iconpvp)
+            QuestFrameDetailPanel.pvp.text:SetText("PvP Quest")
+        elseif qtype == "warn" then
+            QuestFrameDetailPanel.pvp.icon:SetTexture(HCWarn.iconwarn)
+            QuestFrameDetailPanel.pvp.text:SetText(" Warning")
+        end
         QuestFrameDetailPanel.pvp:Show()
         QuestFrameAcceptButton:SetTextColor(1, .25, 0)        
     end
@@ -384,9 +401,9 @@ HCWarn:SetScript("OnEvent", function()
     elseif event == "PLAYER_ENTERING_WORLD" then
         if not this.login then
             this.login = true
+            HCWarn.faction = UnitFactionGroup("player")
             HCWarn.hardcore = HCWarn:checkHardcore()
             HCWarn:mouseover()
-            HCWarn.faction = UnitFactionGroup("player")
             HCWarn:pvpPlayer()
             HCWarn:mapUpdate(true)
             HCWarn:quest()
