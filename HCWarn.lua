@@ -134,10 +134,16 @@ function HCWarn:checkHardcore()
     end
 end
 
-
 function HCWarn:quest()
     if HCWarn_Settings.quest then
-        HCWarn.quests = HCWarn_quests(HCWarn.faction)
+        local faction = HCWarn_quests(HCWarn.faction)
+        local both = HCWarn_quests("both")
+        
+        for k,v in pairs(both) do
+            faction[k] = v
+        end
+
+        HCWarn.quests = faction
     else
         HCWarn.quests = nil
     end
