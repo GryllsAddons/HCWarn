@@ -5,7 +5,6 @@ HCWarn_Settings = {
     reminder = true,
     player = true,
     target = true,
-    quest = true,
     mouseover = true
 }
 
@@ -134,141 +133,6 @@ function HCWarn:checkHardcore()
     end
 end
 
-function HCWarn:quest()
-    if HCWarn_Settings.quest then
-        local faction = HCWarn_quests(HCWarn.faction)
-        local both = HCWarn_quests("both")
-        
-        for k,v in pairs(both) do
-            faction[k] = v
-        end
-
-        HCWarn.quests = faction
-    else
-        HCWarn.quests = nil
-    end
-end
-
-function HCWarn:findQuest(title, giver, objective)    
-    for quest, table in pairs(HCWarn.quests) do
-        if (strupper(quest) == strupper(title)) and (strupper(table[1].giver) == strupper(giver)) then
-            local _, _, match = string.find(objective, "("..table[1].objective..")")
-            if match then
-                -- DEFAULT_CHAT_FRAME:AddMessage("HCWarn: Quest Match", 1, 0.5, 0)
-                return table[1]
-            end
-        end
-    end
-end
-
-function HCWarn:questType(table)
-    if table.type then
-        return table.type
-    end
-end
-
-function HCWarn:questPVP(table)
-    if table.pvp then
-        return "Attacking "..table.pvp.." will flag you for PvP."
-    else
-        return "No information available."
-    end
-end
-
-function HCWarn:questInfo(table)
-    if table.info then
-        return table.info
-    end
-end
-
-function HCWarn:questDetail()
-    if not QuestFrameDetailPanel.pvp then        
-        QuestFrameDetailPanel.pvp = CreateFrame("Frame", nil, QuestFrameDetailPanel)
-        QuestFrameDetailPanel.pvp:Hide()
-        QuestFrameDetailPanel.pvp:SetWidth(1)
-        QuestFrameDetailPanel.pvp:SetHeight(30)
-        QuestFrameDetailPanel.pvp:SetPoint("TOP", QuestNpcNameFrame, "BOTTOM", 0, -8)
-        QuestFrameDetailPanel.pvp:SetBackdrop({
-            bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-            tile = true, tileSize = 14, edgeSize = 14,
-            insets = { left = 4, right = 4, top = 4, bottom = 4 }
-        })
-        QuestFrameDetailPanel.pvp:SetBackdropColor(1, .25, 0, .5)
-        QuestFrameDetailPanel.pvp:SetBackdropBorderColor(1, .25, 0)
-        QuestFrameDetailPanel.pvp:EnableMouse(true)
-        
-        QuestFrameDetailPanel.pvp.icon = QuestFrameDetailPanel.pvp:CreateTexture(nil, "ARTWORK")
-        HCWarn.iconwarn = "Interface\\Icons\\Spell_Shadow_DeathScream"
-        HCWarn.iconpvp = "Interface\\Icons\\Ability_DualWield"        
-        QuestFrameDetailPanel.pvp.icon:SetTexture(HCWarn.iconpvp)
-        local inset = 5
-        QuestFrameDetailPanel.pvp.icon:SetWidth(20)
-        QuestFrameDetailPanel.pvp.icon:SetHeight(20)
-        QuestFrameDetailPanel.pvp.icon:SetPoint("LEFT", QuestFrameDetailPanel.pvp, "LEFT", inset, 0)
-
-        QuestFrameDetailPanel.pvp.icon.border = CreateFrame("Frame", nil, QuestFrameDetailPanel.pvp)
-        QuestFrameDetailPanel.pvp.icon.border:SetPoint("TOPLEFT", QuestFrameDetailPanel.pvp.icon, "TOPLEFT", -2, 2)
-        QuestFrameDetailPanel.pvp.icon.border:SetPoint("BOTTOMRIGHT", QuestFrameDetailPanel.pvp.icon, "BOTTOMRIGHT", 2, -2)
-        QuestFrameDetailPanel.pvp.icon.border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 12})
-        QuestFrameDetailPanel.pvp.icon.border:SetBackdropBorderColor(1, .25, 0)
-
-        QuestFrameDetailPanel.pvp.text = QuestFrameDetailPanel.pvp:CreateFontString("Status", "LOW", "GameFontNormal")
-        QuestFrameDetailPanel.pvp.text:SetFont(DAMAGE_TEXT_FONT, 12, "OUTLINE")
-        QuestFrameDetailPanel.pvp.text:SetPoint("LEFT", QuestFrameDetailPanel.pvp.icon, "RIGHT", 2, 0)
-        QuestFrameDetailPanel.pvp.text:SetFontObject(GameFontWhite)        
-        QuestFrameDetailPanel.pvp.text:SetTextColor(1, 0.25, 0)
-        QuestFrameDetailPanel.pvp.text:SetText("PvP Quest")
-
-        QuestFrameDetailPanel.pvp:SetWidth((inset*2)+QuestFrameDetailPanel.pvp.icon.border:GetWidth()+QuestFrameDetailPanel.pvp.text:GetWidth())
-        if IsAddOnLoaded("pfUI") then
-            QuestFrameDetailPanel.pvp:ClearAllPoints()
-            QuestFrameDetailPanel.pvp:SetPoint("TOP", QuestNpcNameFrame, "BOTTOM", -10, -8)
-        end
-
-        QuestFrameDetailPanel.pvp:SetScript("OnEnter", function()
-            GameTooltip:ClearLines()
-            GameTooltip:SetOwner(this, ANCHOR_BOTTOMLEFT)
-
-            local qtype = HCWarn:questType(HCWarn.pvpQuest)
-            if qtype == "pvp" then
-                GameTooltip:AddLine("PvP Warning", 1, .25, 0)
-                GameTooltip:AddLine(HCWarn:questPVP(HCWarn.pvpQuest))
-            elseif qtype == "warn" then
-                GameTooltip:AddLine("Quest Warning", 1, .25, 0)
-            end
-            GameTooltip:AddLine(HCWarn:questInfo(HCWarn.pvpQuest))
-            GameTooltip:Show()
-        end)
-
-        QuestFrameDetailPanel.pvp:SetScript("OnLeave", function()
-            GameTooltip:Hide()
-        end)
-    end
-
-    HCWarn.pvpQuest = HCWarn:findQuest(GetTitleText(), QuestFrameNpcNameText:GetText(), GetObjectiveText())
-    if HCWarn.pvpQuest then
-        local qtype = HCWarn:questType(HCWarn.pvpQuest)
-        if qtype == "pvp" then
-            QuestFrameDetailPanel.pvp.icon:SetTexture(HCWarn.iconpvp)
-            QuestFrameDetailPanel.pvp.text:SetText("PvP Quest")
-        elseif qtype == "warn" then
-            QuestFrameDetailPanel.pvp.icon:SetTexture(HCWarn.iconwarn)
-            QuestFrameDetailPanel.pvp.text:SetText(" Warning")
-        end
-        QuestFrameDetailPanel.pvp:Show()
-        QuestFrameAcceptButton:SetTextColor(1, .25, 0)        
-    end
-end
-
-function HCWarn:questFinished()
-    HCWarn.pvpQuest = nil
-    if QuestFrameDetailPanel.pvp then
-        QuestFrameDetailPanel.pvp:Hide()
-    end
-    QuestFrameAcceptButton:SetTextColor(1, 0.82, 0)    
-end
-
 function HCWarn:mouseover()
     -- set global variable for /stcast
     if HCWarn_Settings.mouseover then        
@@ -286,7 +150,6 @@ function HCWarn:reset()
     HCWarn_Settings.border = true
     HCWarn_Settings.player = true
     HCWarn_Settings.target = true
-    HCWarn_Settings.quest = true
     HCWarn_Settings.reminder = true
     HCWarn_Settings.mouseover = true
     
@@ -295,7 +158,6 @@ function HCWarn:reset()
     HCWarn:mouseover()
     HCWarn.inInstance = nil
     HCWarn:mapUpdate(true)
-    HCWarn:quest()
 end
 
 local function HCWarn_commands(msg, editbox)
@@ -346,14 +208,6 @@ local function HCWarn_commands(msg, editbox)
         end
         message(HCWarn_Settings.target, "Target PvP warning")
         HCWarn:pvpTarget()
-    elseif msg == "quest" then
-        if HCWarn_Settings.quest then
-            HCWarn_Settings.quest = false
-        else
-            HCWarn_Settings.quest = true
-        end
-        message(HCWarn_Settings.quest, "Quest PvP warning")
-        HCWarn:quest()
     elseif msg == "reminder" then
         if HCWarn_Settings.reminder then
             HCWarn_Settings.reminder = false
@@ -377,7 +231,6 @@ local function HCWarn_commands(msg, editbox)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn target - toggle targeting PvP flagged units", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn warn player - toggle PvP warning for your character", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn warn target - toggle PvP warning for your target", 1, 0.5, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("/hcwarn quest - toggle PvP warning for quests", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn reminder - toggle 'You can target' reminder", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn sound - toggle player PvP warning sound", 1, 0.5, 0)
         DEFAULT_CHAT_FRAME:AddMessage("/hcwarn border - toggle player PvP warning border", 1, 0.5, 0)      
@@ -392,8 +245,6 @@ HCWarn:RegisterEvent("WORLD_MAP_UPDATE")
 HCWarn:RegisterEvent("PLAYER_TARGET_CHANGED")
 HCWarn:RegisterEvent("UNIT_FACTION", "player")
 HCWarn:RegisterEvent("UNIT_FACTION", "target")
-HCWarn:RegisterEvent("QUEST_DETAIL")
-HCWarn:RegisterEvent("QUEST_FINISHED")
 
 HCWarn:SetScript("OnEvent", function()
     if event == "ADDON_LOADED" then
@@ -412,7 +263,6 @@ HCWarn:SetScript("OnEvent", function()
             HCWarn:mouseover()
             HCWarn:pvpPlayer()
             HCWarn:mapUpdate(true)
-            HCWarn:quest()
             if IsAddOnLoaded("unitscan") or IsAddOnLoaded("unitscan-turtle") then
                 HCWarn.unitscan = true
             end
@@ -426,14 +276,6 @@ HCWarn:SetScript("OnEvent", function()
             HCWarn:pvpPlayer()
         elseif arg1 == "target" then            
             HCWarn:pvpTarget()  
-        end
-    elseif event == "QUEST_DETAIL" then
-        if HCWarn_Settings.quest then
-            HCWarn:questDetail()
-        end
-    elseif event == "QUEST_FINISHED" then
-        if HCWarn_Settings.quest or HCWarn.pvpQuest then
-            HCWarn:questFinished()
         end
     end
 end)
