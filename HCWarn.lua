@@ -100,12 +100,16 @@ function HCWarn:pvpTargetLogic()
         end
     end
 
-    if HCWarn.hardcore then -- hardcore players cannot assist friendly pvp players
-        if UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then
+    if HCWarn.hardcore then 
+        -- hardcore players cannot assist friendly pvp players or attack enemy pvp players
+        -- proceed if NPC is PvP and attackable when outside instances
+        if (not UnitIsPlayer("target")) and UnitIsPVP("target") and UnitCanAttack("player", "target") and (not IsInInstance()) then
             target()
         end
-    else -- non hc players will get flagged if assisting friendly pvp players
-        if UnitIsPVP("target") and UnitIsPlayer("target") and (not IsInInstance()) then 
+    else 
+        -- non hc players will get flagged if assisting friendly pvp players or attacking enemy pvp players
+        -- proceed if player is PvP when outside instances
+        if UnitIsPlayer("target") and UnitIsPVP("target") and (not IsInInstance()) then 
             target()
         end
     end
